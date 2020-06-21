@@ -16,7 +16,23 @@ namespace FindByIp
             visibleOrNot = false;
         }
 
-        void Timer1_Tick(object sender, System.EventArgs e)
+        /*Плавное появление формы*/
+        void TimerToSmoothlyRunForm_Tick(object sender, System.EventArgs e)
+        {
+            if (Opacity == 1)
+                timerToSmoothlyRunForm.Stop();
+            else
+                Opacity += .04;
+        }
+
+        void Button1_Click(object sender, System.EventArgs e)
+        {
+            timerForSlidingPanelInformation.Start();
+        }
+
+        /* По дефолту panelForInformation во всю форму, а значит panelForMap с картой не видна (visibleOrNot = false)
+         * От сих и первое действие - уменьшение значения ширины на 10*/
+        void TimerForSlidingPanelInformation_Tick(object sender, System.EventArgs e)
         {
             if (!visibleOrNot)
             {
@@ -24,7 +40,7 @@ namespace FindByIp
 
                 if (panelForInformation.Width <= defaultWidthOfPanel)
                 {
-                    timer1.Stop();
+                    timerForSlidingPanelInformation.Stop();
                     visibleOrNot = true;
                 }
             }
@@ -34,35 +50,18 @@ namespace FindByIp
                 panelForInformation.Width += 10;
                 if (panelForInformation.Width >= 800)
                 {
-                    timer1.Stop();
+                    timerForSlidingPanelInformation.Stop();
                     visibleOrNot = false;
                 }
             }
-            //if (visibleOrNot)
-            //{
-            //    panelForInformation.Width += 10;
-            //    if (panelForInformation.Width > 0)
-            //    {
-            //        timer1.Stop();
-            //        visibleOrNot = false;
-            //    }
-            //}
-
-            //else
-            //{
-            //    panelForInformation.Visible = true;
-            //    panelForInformation.Width -= 10;
-            //    if (panelForInformation.Width >= panelForMapsDefaultWidth)
-            //    {
-            //        timer1.Stop();
-            //        visibleOrNot = true;
-            //    }
-            //}
         }
 
-        void Button1_Click(object sender, System.EventArgs e)
+        void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            timer1.Start();
+            if (WindowState == FormWindowState.Minimized)
+                WindowState = FormWindowState.Normal;
         }
+
+        void CloseToolStripMenuItem_Click(object sender, System.EventArgs e) => Close();
     }
 }
