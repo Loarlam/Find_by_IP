@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FindByIp
@@ -11,49 +12,56 @@ namespace FindByIp
         bool visibleOrNot;
         int defaultWidthOfPanel;
         SaveFileDialog saveFileDialog;
+        int counter;
 
         public Form1()
         {
             InitializeComponent();
 
-            webBrowser1.Visible = false;
+            counter = 0;
             defaultWidthOfPanel = panelForInformation.Width;
             panelForInformation.Width += 400;
-            panelForMap.Width -= 400;
+            webBrowser1.Width -= 400;
             visibleOrNot = false;
             saveFileDialog = new SaveFileDialog
             {
+
                 InitialDirectory = $@"C:\Users\{Environment.UserName}\Desktop\",
                 FileName = "Screenshot",
                 CheckPathExists = true,
                 OverwritePrompt = true,
             };
+            webBrowser1.Url = new Uri("https://ya.ru", UriKind.Absolute);
         }
 
         /*Плавное появление формы*/
-        void TimerToSmoothlyRunForm_Tick(object sender, EventArgs e)
+        async void TimerToSmoothlyRunForm_Tick(object sender, EventArgs e)
         {
+            if (counter == 0)
+            {
+                await Task.Delay(200);
+                counter++;
+            }
+
             if (Opacity == 1)
                 timerToSmoothlyRunForm.Stop();
             else
                 Opacity += .04;
+
         }
 
         void Button1_Click(object sender, EventArgs e)
         {
             webBrowser1.Visible = true;
-            panelForMap.Visible = true;
             timerForSlidingPanelInformation.Start();
         }
 
-        /* По дефолту panelForInformation во всю форму, а значит panelForMap с картой не видна (visibleOrNot = false)
-         * От сих и первое действие - уменьшение значения ширины на 10*/
         void TimerForSlidingPanelInformation_Tick(object sender, EventArgs e)
         {
             if (!visibleOrNot)
             {
                 panelForInformation.Width -= 10;
-                panelForMap.Width += 10;
+                webBrowser1.Width += 10;
 
                 if (panelForInformation.Width <= defaultWidthOfPanel)
                 {
@@ -65,7 +73,7 @@ namespace FindByIp
             else
             {
                 panelForInformation.Width += 10;
-                panelForMap.Width -= 10;
+                webBrowser1.Width -= 10;
                 if (panelForInformation.Width >= 800)
                 {
                     timerForSlidingPanelInformation.Stop();
@@ -76,13 +84,16 @@ namespace FindByIp
 
         void ScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Bitmap screenshot = new Bitmap(Width-16, Height-9);
+            Graphics graphics = Graphics.FromImage(screenshot);
+            /*обрезаем тень по краям формы*/
+            graphics.CopyFromScreen(Location.X+8, Location.Y+1, 0, 0, screenshot.Size); 
+
             saveFileDialog.Title = "Сохранение скриншота";
             saveFileDialog.Filter = "JPEG (*.jpg; *.jpeg; *.jpe) | *.jpg; *jpeg; *.jpe|PNG (*.png) | *.png|BMP (*.bmp) | *.bmp";
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                Bitmap screenshot = new Bitmap(panelForScreenshot.Width, panelForScreenshot.Height);
-                panelForScreenshot.DrawToBitmap(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height));
                 saveFileDialog.InitialDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                 screenshot.Save(saveFileDialog.FileName);
                 saveFileDialog.FileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
