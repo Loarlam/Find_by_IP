@@ -16,12 +16,18 @@ namespace FindByIp
         {
             InitializeComponent();
 
-            panelForMap.Hide();
+            webBrowser1.Visible = false;
             defaultWidthOfPanel = panelForInformation.Width;
             panelForInformation.Width += 400;
+            panelForMap.Width -= 400;
             visibleOrNot = false;
-            saveFileDialog = new SaveFileDialog { InitialDirectory = $@"C:\Users\{Environment.UserName}\Desktop\" };
-            saveFileDialog.FileName = "Screenshot";
+            saveFileDialog = new SaveFileDialog
+            {
+                InitialDirectory = $@"C:\Users\{Environment.UserName}\Desktop\",
+                FileName = "Screenshot",
+                CheckPathExists = true,
+                OverwritePrompt = true,
+            };
         }
 
         /*Плавное появление формы*/
@@ -35,7 +41,8 @@ namespace FindByIp
 
         void Button1_Click(object sender, EventArgs e)
         {
-            panelForMap.Show();
+            webBrowser1.Visible = true;
+            panelForMap.Visible = true;
             timerForSlidingPanelInformation.Start();
         }
 
@@ -46,6 +53,7 @@ namespace FindByIp
             if (!visibleOrNot)
             {
                 panelForInformation.Width -= 10;
+                panelForMap.Width += 10;
 
                 if (panelForInformation.Width <= defaultWidthOfPanel)
                 {
@@ -57,6 +65,7 @@ namespace FindByIp
             else
             {
                 panelForInformation.Width += 10;
+                panelForMap.Width -= 10;
                 if (panelForInformation.Width >= 800)
                 {
                     timerForSlidingPanelInformation.Stop();
@@ -69,8 +78,6 @@ namespace FindByIp
         {
             saveFileDialog.Title = "Сохранение скриншота";
             saveFileDialog.Filter = "JPEG (*.jpg; *.jpeg; *.jpe) | *.jpg; *jpeg; *.jpe|PNG (*.png) | *.png|BMP (*.bmp) | *.bmp";
-            saveFileDialog.OverwritePrompt = true;
-            saveFileDialog.CheckPathExists = true;
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
