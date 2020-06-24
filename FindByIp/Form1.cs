@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -31,6 +33,7 @@ namespace FindByIp
                 CheckPathExists = true,
                 OverwritePrompt = true,
             };
+
             webBrowser1.Url = new Uri("https://ya.ru", UriKind.Absolute);
         }
 
@@ -39,7 +42,7 @@ namespace FindByIp
         {
             if (counter == 0)
             {
-                await Task.Delay(200);
+                await Task.Delay(150);
                 counter++;
             }
 
@@ -53,6 +56,14 @@ namespace FindByIp
         void Button1_Click(object sender, EventArgs e)
         {
             webBrowser1.Visible = true;
+
+            using (WebClient wc = new WebClient())
+            {
+                Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{maskedTextBox1.Text}"), 
+                    "\"country\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\"");
+                textBox1.Text = match.Groups[1].Value + Environment.NewLine + match.Groups[3].Value;
+            }
+
             timerForSlidingPanelInformation.Start();
         }
 
@@ -60,6 +71,9 @@ namespace FindByIp
         {
             if (!visibleOrNot)
             {
+                maskedTextBox1.Enabled = false;
+                textBox1.Enabled = false;
+                button1.Text = "Скрыть карту";
                 panelForInformation.Width -= 10;
                 webBrowser1.Width += 10;
 
@@ -72,10 +86,14 @@ namespace FindByIp
 
             else
             {
+                maskedTextBox1.Enabled = true;
+                textBox1.Enabled = true;
+                button1.Text = "Развернуть карту";
                 panelForInformation.Width += 10;
                 webBrowser1.Width -= 10;
                 if (panelForInformation.Width >= 800)
                 {
+                    webBrowser1.Visible = false;
                     timerForSlidingPanelInformation.Stop();
                     visibleOrNot = false;
                 }

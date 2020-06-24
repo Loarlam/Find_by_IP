@@ -38,10 +38,11 @@
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelForScreenshot = new System.Windows.Forms.Panel();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.panelForInformation = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
             this.panelForScreenshot.SuspendLayout();
@@ -105,24 +106,11 @@
             this.panelForScreenshot.Size = new System.Drawing.Size(800, 561);
             this.panelForScreenshot.TabIndex = 4;
             // 
-            // webBrowser1
-            // 
-            this.webBrowser1.ContextMenuStrip = this.contextMenuStrip2;
-            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.webBrowser1.IsWebBrowserContextMenuEnabled = false;
-            this.webBrowser1.Location = new System.Drawing.Point(400, 0);
-            this.webBrowser1.Margin = new System.Windows.Forms.Padding(0);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.ScrollBarsEnabled = false;
-            this.webBrowser1.Size = new System.Drawing.Size(400, 561);
-            this.webBrowser1.TabIndex = 0;
-            this.webBrowser1.Url = new System.Uri("", System.UriKind.Relative);
-            this.webBrowser1.Visible = false;
-            // 
             // panelForInformation
             // 
             this.panelForInformation.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.panelForInformation.ContextMenuStrip = this.contextMenuStrip2;
+            this.panelForInformation.Controls.Add(this.textBox1);
             this.panelForInformation.Controls.Add(this.button1);
             this.panelForInformation.Controls.Add(this.maskedTextBox1);
             this.panelForInformation.Dock = System.Windows.Forms.DockStyle.Left;
@@ -138,24 +126,52 @@
             this.button1.BackColor = System.Drawing.SystemColors.Window;
             this.button1.FlatAppearance.BorderSize = 0;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(142, 372);
+            this.button1.Location = new System.Drawing.Point(89, 464);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(116, 36);
+            this.button1.Size = new System.Drawing.Size(223, 36);
             this.button1.TabIndex = 1;
-            this.button1.Text = "Узнать";
+            this.button1.Text = "Развернуть карту";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // maskedTextBox1
             // 
             this.maskedTextBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.maskedTextBox1.Location = new System.Drawing.Point(142, 152);
-            this.maskedTextBox1.Mask = "000.000.000.000";
+            this.maskedTextBox1.BeepOnError = true;
+            this.maskedTextBox1.Location = new System.Drawing.Point(142, 60);
+            this.maskedTextBox1.Mask = "990\\.990\\.990\\.990";
             this.maskedTextBox1.Name = "maskedTextBox1";
             this.maskedTextBox1.Size = new System.Drawing.Size(116, 24);
             this.maskedTextBox1.TabIndex = 0;
             this.maskedTextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.maskedTextBox1.ValidatingType = typeof(int);
+            // 
+            // webBrowser1
+            // 
+            this.webBrowser1.ContextMenuStrip = this.contextMenuStrip2;
+            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.webBrowser1.IsWebBrowserContextMenuEnabled = false;
+            this.webBrowser1.Location = new System.Drawing.Point(400, 0);
+            this.webBrowser1.Margin = new System.Windows.Forms.Padding(0);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.ScrollBarsEnabled = false;
+            this.webBrowser1.Size = new System.Drawing.Size(400, 561);
+            this.webBrowser1.TabIndex = 0;
+            this.webBrowser1.Url = new System.Uri("", System.UriKind.Relative);
+            this.webBrowser1.Visible = false;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.textBox1.BackColor = System.Drawing.SystemColors.Window;
+            this.textBox1.Location = new System.Drawing.Point(39, 111);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(323, 320);
+            this.textBox1.TabIndex = 2;
+            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Form1
             // 
@@ -196,6 +212,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.MaskedTextBox maskedTextBox1;
         private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 
