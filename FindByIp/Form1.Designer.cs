@@ -39,10 +39,11 @@
             this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelForScreenshot = new System.Windows.Forms.Panel();
             this.panelForInformation = new System.Windows.Forms.Panel();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
             this.panelForScreenshot.SuspendLayout();
@@ -104,12 +105,13 @@
             this.panelForScreenshot.Location = new System.Drawing.Point(0, 0);
             this.panelForScreenshot.Name = "panelForScreenshot";
             this.panelForScreenshot.Size = new System.Drawing.Size(800, 561);
-            this.panelForScreenshot.TabIndex = 4;
+            this.panelForScreenshot.TabIndex = 6;
             // 
             // panelForInformation
             // 
             this.panelForInformation.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.panelForInformation.ContextMenuStrip = this.contextMenuStrip2;
+            this.panelForInformation.Controls.Add(this.linkLabel1);
             this.panelForInformation.Controls.Add(this.textBox1);
             this.panelForInformation.Controls.Add(this.button1);
             this.panelForInformation.Controls.Add(this.maskedTextBox1);
@@ -118,47 +120,7 @@
             this.panelForInformation.Margin = new System.Windows.Forms.Padding(0);
             this.panelForInformation.Name = "panelForInformation";
             this.panelForInformation.Size = new System.Drawing.Size(400, 561);
-            this.panelForInformation.TabIndex = 0;
-            // 
-            // button1
-            // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.button1.BackColor = System.Drawing.SystemColors.Window;
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(89, 464);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(223, 36);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Развернуть карту";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
-            // 
-            // maskedTextBox1
-            // 
-            this.maskedTextBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.maskedTextBox1.BeepOnError = true;
-            this.maskedTextBox1.Location = new System.Drawing.Point(142, 60);
-            this.maskedTextBox1.Mask = "990\\.990\\.990\\.990";
-            this.maskedTextBox1.Name = "maskedTextBox1";
-            this.maskedTextBox1.Size = new System.Drawing.Size(116, 24);
-            this.maskedTextBox1.TabIndex = 0;
-            this.maskedTextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.maskedTextBox1.ValidatingType = typeof(int);
-            // 
-            // webBrowser1
-            // 
-            this.webBrowser1.ContextMenuStrip = this.contextMenuStrip2;
-            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.webBrowser1.IsWebBrowserContextMenuEnabled = false;
-            this.webBrowser1.Location = new System.Drawing.Point(400, 0);
-            this.webBrowser1.Margin = new System.Windows.Forms.Padding(0);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.ScrollBarsEnabled = false;
-            this.webBrowser1.Size = new System.Drawing.Size(400, 561);
-            this.webBrowser1.TabIndex = 0;
-            this.webBrowser1.Url = new System.Uri("", System.UriKind.Relative);
-            this.webBrowser1.Visible = false;
+            this.panelForInformation.TabIndex = 4;
             // 
             // textBox1
             // 
@@ -171,7 +133,74 @@
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(323, 320);
             this.textBox1.TabIndex = 2;
+            this.textBox1.TabStop = false;
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // button1
+            // 
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.button1.BackColor = System.Drawing.SystemColors.Window;
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Location = new System.Drawing.Point(89, 464);
+            this.button1.Margin = new System.Windows.Forms.Padding(0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(223, 36);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Развернуть карту";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            // 
+            // maskedTextBox1
+            // 
+            this.maskedTextBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.maskedTextBox1.BeepOnError = true;
+            this.maskedTextBox1.Location = new System.Drawing.Point(142, 60);
+            this.maskedTextBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.maskedTextBox1.Mask = "990\\.990\\.990\\.990";
+            this.maskedTextBox1.Name = "maskedTextBox1";
+            this.maskedTextBox1.Size = new System.Drawing.Size(116, 24);
+            this.maskedTextBox1.TabIndex = 0;
+            this.maskedTextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.maskedTextBox1.ValidatingType = typeof(int);
+            this.maskedTextBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MaskedTextBox1_KeyDown);
+            // 
+            // webBrowser1
+            // 
+            this.webBrowser1.ContextMenuStrip = this.contextMenuStrip2;
+            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.webBrowser1.IsWebBrowserContextMenuEnabled = false;
+            this.webBrowser1.Location = new System.Drawing.Point(400, 0);
+            this.webBrowser1.Margin = new System.Windows.Forms.Padding(0);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.ScrollBarsEnabled = false;
+            this.webBrowser1.Size = new System.Drawing.Size(400, 561);
+            this.webBrowser1.TabIndex = 5;
+            this.webBrowser1.TabStop = false;
+            this.webBrowser1.Url = new System.Uri("", System.UriKind.Relative);
+            this.webBrowser1.Visible = false;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.Blue;
+            this.linkLabel1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.linkLabel1.BackColor = System.Drawing.SystemColors.Window;
+            this.linkLabel1.DisabledLinkColor = System.Drawing.Color.Blue;
+            this.linkLabel1.ForeColor = System.Drawing.Color.IndianRed;
+            this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(37, 26);
+            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.linkLabel1.Location = new System.Drawing.Point(62, 252);
+            this.linkLabel1.Margin = new System.Windows.Forms.Padding(0);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(276, 36);
+            this.linkLabel1.TabIndex = 3;
+            this.linkLabel1.Text = "IP-адрес неверного формата!\r\nЧитать: IPv4 (классовая адресация)";
+            this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.linkLabel1.UseCompatibleTextRendering = true;
+            this.linkLabel1.UseMnemonic = false;
+            this.linkLabel1.Visible = false;
+            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
             // 
             // Form1
             // 
@@ -213,6 +242,7 @@
         private System.Windows.Forms.MaskedTextBox maskedTextBox1;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
 
