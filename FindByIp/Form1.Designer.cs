@@ -39,11 +39,11 @@
             this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelForScreenshot = new System.Windows.Forms.Panel();
             this.panelForInformation = new System.Windows.Forms.Panel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
             this.panelForScreenshot.SuspendLayout();
@@ -122,6 +122,29 @@
             this.panelForInformation.Size = new System.Drawing.Size(400, 561);
             this.panelForInformation.TabIndex = 4;
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.Blue;
+            this.linkLabel1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.linkLabel1.BackColor = System.Drawing.SystemColors.Window;
+            this.linkLabel1.DisabledLinkColor = System.Drawing.Color.Blue;
+            this.linkLabel1.ForeColor = System.Drawing.Color.IndianRed;
+            this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(37, 26);
+            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.linkLabel1.Location = new System.Drawing.Point(62, 252);
+            this.linkLabel1.Margin = new System.Windows.Forms.Padding(0);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(276, 36);
+            this.linkLabel1.TabIndex = 3;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "IP-адрес неверного формата!\r\nЧитать: IPv4 (классовая адресация)";
+            this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.linkLabel1.UseCompatibleTextRendering = true;
+            this.linkLabel1.UseMnemonic = false;
+            this.linkLabel1.Visible = false;
+            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
+            // 
             // textBox1
             // 
             this.textBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -180,28 +203,6 @@
             this.webBrowser1.Url = new System.Uri("", System.UriKind.Relative);
             this.webBrowser1.Visible = false;
             // 
-            // linkLabel1
-            // 
-            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.Blue;
-            this.linkLabel1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.linkLabel1.BackColor = System.Drawing.SystemColors.Window;
-            this.linkLabel1.DisabledLinkColor = System.Drawing.Color.Blue;
-            this.linkLabel1.ForeColor = System.Drawing.Color.IndianRed;
-            this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(37, 26);
-            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.linkLabel1.Location = new System.Drawing.Point(62, 252);
-            this.linkLabel1.Margin = new System.Windows.Forms.Padding(0);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(276, 36);
-            this.linkLabel1.TabIndex = 3;
-            this.linkLabel1.Text = "IP-адрес неверного формата!\r\nЧитать: IPv4 (классовая адресация)";
-            this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.linkLabel1.UseCompatibleTextRendering = true;
-            this.linkLabel1.UseMnemonic = false;
-            this.linkLabel1.Visible = false;
-            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Blue;
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -219,6 +220,7 @@
             this.Opacity = 0D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Информация об IP-адресе";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.contextMenuStrip1.ResumeLayout(false);
             this.contextMenuStrip2.ResumeLayout(false);
             this.panelForScreenshot.ResumeLayout(false);

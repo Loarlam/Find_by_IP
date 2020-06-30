@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -13,11 +14,13 @@ namespace FindByIp
     {
         bool visibleOrNot;
         int defaultWidthOfPanel, counter;
-        string maskTextBoxValue;
+        string maskTextBoxValue, pathToRegistryFolder = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION";
         SaveFileDialog saveFileDialog;
 
         public Form1()
         {
+            Registry.CurrentUser.OpenSubKey(pathToRegistryFolder, true).SetValue("FindByIp.exe", "69632", RegistryValueKind.DWord);
+
             InitializeComponent();
 
             counter = 0;
@@ -35,16 +38,13 @@ namespace FindByIp
                 OverwritePrompt = true,
             };
 
-            webBrowser1.ScriptErrorsSuppressed = true;            
 
-            webBrowser1.Url = new Uri("https://www.google.com/maps/@?api=1&map_action=map", UriKind.Absolute);
-
-            //Перевести фокус на maskTextBox при запуске формы
+            webBrowser1.ScriptErrorsSuppressed = true;
         }
 
-        /*Плавное появление формы*/
         async void TimerToSmoothlyRunForm_Tick(object sender, EventArgs e)
         {
+            /*Плавное появление формы*/
             if (counter == 0)
             {
                 await Task.Delay(150);
@@ -55,7 +55,6 @@ namespace FindByIp
                 timerToSmoothlyRunForm.Stop();
             else
                 Opacity += .04;
-
         }
 
         void Button1_Click(object sender, EventArgs e)
@@ -78,10 +77,11 @@ namespace FindByIp
                     {
                         Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{maskedTextBox1.Text}"),
                             "\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"region\":\"(.*?)\",\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\"");
-                        //webBrowser1.Url = new Uri($"https://www.google.com/maps/search/?api=1&query={match.Groups[7].Value},{match.Groups[8].Value}", UriKind.Absolute);                        
+
                         webBrowser1.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[7].Value},{match.Groups[8].Value}", UriKind.Absolute);
+
                         textBox1.Text = "Континент: " + match.Groups[1].Value + "\r\n" + "Страна: " + match.Groups[3].Value + "\r\n"
-                            + "Регион: " + match.Groups[5].Value + "\r\n" + "Город: " + match.Groups[6].Value + "\r\n" 
+                            + "Регион: " + match.Groups[5].Value + "\r\n" + "Город: " + match.Groups[6].Value + "\r\n"
                             + "Широта: " + match.Groups[7].Value + "\r\n" + "Долгота: " + match.Groups[8].Value + "\r\n" + "Часовой пояс: " + match.Groups[10].Value;
                     }
 
@@ -189,5 +189,8 @@ namespace FindByIp
                 }
             }
         }
+
+        void Form1_FormClosing(object sender, FormClosingEventArgs e) =>
+            Registry.CurrentUser.OpenSubKey(pathToRegistryFolder, true).DeleteValue("FindByIp.exe");
     }
 }
