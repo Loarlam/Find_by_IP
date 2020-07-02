@@ -5,7 +5,8 @@
 3. Продумать возможность избавления от webBrowser, и замену его на скриншот области с карты, с выводом оного в отдельную панель$
 4. Подумать над counterForFileName$
 5. Блокровать возможность сохранения файла, если в maskTextBox не изменился ip-адрес. Цвет текста в ContextMenuStrip заменить на красный, и сам текст поменять на "повторное сохранение невозможно";
-6. Починить ошибку, которая позволяла юзеру вводить больше ограниченного числа символов в maskTextBox.
+6. Починить ошибку, которая позволяла юзеру вводить больше ограниченного числа символов в maskTextBox;
+7. Переименовать переменные.
 */
 
 using Microsoft.Win32;
@@ -89,8 +90,6 @@ namespace FindByIp
 
         void Button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"{maskedTextBox1.Text.Length}");
-
             if (maskTextBoxValue != maskedTextBox1.Text)
             {
                 if (IPAdressExists(maskedTextBox1.Text))
@@ -114,15 +113,15 @@ namespace FindByIp
                         using (WebClient wc = new WebClient())
                         {
                             Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{maskedTextBox1.Text}"),
-                                "\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"region\":\"(.*?)\",\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\"");
+                                "\"ip\":\"(.*?)\",(.*?)\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"region\":\"(.*?)\",\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\"");
 
-                            webBrowser1.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[7].Value},{match.Groups[8].Value}", UriKind.Absolute);
+                            webBrowser1.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[9].Value},{match.Groups[10].Value}", UriKind.Absolute);
 
-                            textBox1.Text = "Континент: " + match.Groups[1].Value + "\r\n" + "Страна: " + match.Groups[3].Value + "\r\n"
-                                + "Регион: " + match.Groups[5].Value + "\r\n" + "Город: " + match.Groups[6].Value + "\r\n"
-                                + "Широта: " + match.Groups[7].Value + "\r\n" + "Долгота: " + match.Groups[8].Value + "\r\n" + "Часовой пояс: " + match.Groups[10].Value;
+                            textBox1.Text = "IP-адрес: "+ match.Groups[1].Value + "\r\n" + "Континент: " + match.Groups[3].Value + "\r\n" + "Страна: " + match.Groups[5].Value + "\r\n"
+                                + "Регион: " + match.Groups[7].Value + "\r\n" + "Город: " + match.Groups[8].Value + "\r\n"
+                                + "Широта: " + match.Groups[9].Value + "\r\n" + "Долгота: " + match.Groups[10].Value + "\r\n" + "Часовой пояс: " + match.Groups[12].Value;
 
-                            saveFileDialog.FileName = $"{match.Groups[6].Value}, {match.Groups[7].Value}, {match.Groups[8].Value}";
+                            saveFileDialog.FileName = $"{match.Groups[8].Value}, {match.Groups[9].Value}, {match.Groups[10].Value}";
                             timerForSlidingPanelInformation.Start();
                         }
                     }
@@ -203,6 +202,8 @@ namespace FindByIp
 
             else
             {
+                maskedTextBox1.Text = "";
+                maskedTextBox1.Focus();
                 maskedTextBox1.Enabled = true;
                 textBox1.Enabled = true;
                 button1.Text = "Развернуть карту";
