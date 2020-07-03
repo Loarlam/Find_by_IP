@@ -208,7 +208,6 @@
             // 
             // maskedTextBox1
             // 
-            this.maskedTextBox1.AllowDrop = true;
             this.maskedTextBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.maskedTextBox1.Location = new System.Drawing.Point(142, 60);
             this.maskedTextBox1.Margin = new System.Windows.Forms.Padding(0);
