@@ -1,7 +1,6 @@
 ﻿/*
 Планы:
 1. Добавить: перерисовку карты, если пользователь передвинул карту в сторону, только после того, как нажмет на кнопку "Раскрыть карту";
-3. Продумать возможность избавления от webBrowser, и замену его на скриншот области с карты, с выводом оного в отдельную панель$
 7. Переименовать переменные;
 8. Если юзер нажмимает пробел в поле maskedTextBox, то он заменяется на ноль.
 */
@@ -109,7 +108,7 @@ namespace FindByIp
                         Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{maskedTextBox1.Text}"),
                             "\"ip\":\"(.*?)\",(.*?)\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"region\":\"(.*?)\",\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\"");
 
-                        webBrowser1.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[9].Value},{match.Groups[10].Value}", UriKind.Absolute);
+                        webBrowser1.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[9].Value},{match.Groups[10].Value}&zoom=12", UriKind.Absolute);
 
                         textBox1.Text = "IP-адрес: " + match.Groups[1].Value + "\r\n" + "Континент: " + match.Groups[3].Value + "\r\n" + "Страна: " + match.Groups[5].Value + "\r\n"
                             + "Регион: " + match.Groups[7].Value + "\r\n" + "Город: " + match.Groups[8].Value + "\r\n"
@@ -186,7 +185,7 @@ namespace FindByIp
                 if (panelForInformation.Width <= defaultWidthOfPanel)
                 {
                     timerForSlidingPanelInformation.Stop();
-                    await Task.Delay(2000); /*Задержка для подгрузки карты + установки курсора в поле поиска карты */
+                    await Task.Delay(3500); /*Задержка для подгрузки карты + установки курсора в поле поиска карты */
                     button1.Focus(); /*Переводим фокус с поля ввода карты на кнопку, после задержки*/
                     IsWebBrowserVisible = true;
                 }
@@ -205,6 +204,7 @@ namespace FindByIp
                 {
                     webBrowser1.Visible = false;
                     timerForSlidingPanelInformation.Stop();
+                    maskedTextBox1.Focus();
                     IsWebBrowserVisible = false;
                 }
             }
