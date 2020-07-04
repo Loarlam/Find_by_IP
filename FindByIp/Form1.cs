@@ -21,12 +21,13 @@ namespace FindByIp
 {
     public partial class Form1 : Form
     {
+        const string PATH_TO_REGISTRY_FOLDER = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION",
+                    REGULAR_EXPRESSION = "\"ip\":\"(.*?)\",(.*?)\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"country_phone\":\"(.*?)\",(.*?)\"region\":\"(.*?)\",\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"isp\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\",\"currency\":\"(.*?)\"";
         bool IsWebBrowserVisible, counterTrueOrFalse;
         byte digitsInTheFileName;
         short defaultWidthOfPanel;
         string[] filesInFolder;
         string maskedTextBoxValue, previousTextBoxValue;
-        const string PATH_TO_REGISTRY_FOLDER = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION";
         IPStatus status;
         SaveFileDialog saveFileDialog;
 
@@ -92,11 +93,151 @@ namespace FindByIp
 
         void Button1_Click(object sender, EventArgs e)
         {
-            //Починить ошибку при выключенном интернете
-            if (!maskedTextBoxValue.Contains(maskedTextBox1.Text) && IPAddressExists(maskedTextBox1.Text))
+            if (!(label1.Visible && button2.Visible))
             {
-                maskedTextBoxValue = maskedTextBox1.Text;
+                if (!maskedTextBoxValue.Contains(maskedTextBox1.Text) && IPAddressExists(maskedTextBox1.Text) && !label1.Visible)
+                {
+                    maskedTextBoxValue = maskedTextBox1.Text;
 
+                    try
+                    {
+                        Ping ping = new Ping();
+                        PingReply reply = ping.Send(@"ya.ru");
+                        status = reply.Status;
+
+                        if (panelForInformation.BackColor != SystemColors.GradientActiveCaption)
+                        {
+                            linkLabel1.Visible = false;
+                            panelForInformation.BackColor = SystemColors.GradientActiveCaption;
+                        }
+
+                        webBrowser1.Visible = true;
+
+                        using (WebClient wc = new WebClient())
+                        {
+                            Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{maskedTextBox1.Text}"), REGULAR_EXPRESSION);
+
+                            webBrowser1.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[11].Value},{match.Groups[12].Value}&zoom=13", UriKind.Absolute);
+
+                            textBox1.Text = $"\r\n\r\n\r\nIP-адрес: {match.Groups[1].Value}\r\nКонтинент: {match.Groups[3].Value}\r\nСтрана: {match.Groups[5].Value}\r\n" +
+                                $"Телефонный код страны: {match.Groups[7].Value}\r\nРегион: {match.Groups[9].Value}\r\nГород: {match.Groups[10].Value}\r\nШирота: {match.Groups[11].Value}" +
+                                $"\r\nДолгота: {match.Groups[12].Value}\r\nПровайдер: {match.Groups[14].Value}\r\nЧасовой пояс: {match.Groups[16].Value}\r\nВалюта: {match.Groups[17].Value}";
+
+                            saveFileDialog.FileName = $"{match.Groups[10].Value}, {match.Groups[12].Value}, {match.Groups[13].Value}";
+                            timerForSlidingPanelInformation.Start();
+                        }
+                    }
+
+                    catch (Exception)
+                    {
+                        panelForInformation.BackColor = Color.IndianRed;
+                        maskedTextBox1.Enabled = false;
+                        maskedTextBox1.Clear();
+                        maskedTextBoxValue = previousTextBoxValue = "";
+                        textBox1.Clear();
+
+                        if (linkLabel1.Visible)
+                            linkLabel1.Visible = false;
+
+                        label1.Visible = button2.Visible = true;
+
+                        while (panelForInformation.Width < 800)
+                        {
+                            panelForInformation.Width += 10;
+                            webBrowser1.Width -= 10;
+                        }
+
+                        webBrowser1.Visible = IsWebBrowserVisible = false;
+                        button1.Text = "Развернуть карту";
+                        button2.Focus();
+                    }
+                }
+
+                else if (maskedTextBoxValue.Contains(maskedTextBox1.Text) && !label1.Visible)
+                {
+                    try
+                    {
+                        Ping ping = new Ping();
+                        PingReply reply = ping.Send(@"ya.ru");
+                        status = reply.Status;
+
+                        if (!webBrowser1.Visible)
+                        {
+                            textBox1.Text = previousTextBoxValue;
+                            webBrowser1.Visible = true;
+                        }
+
+                        timerForSlidingPanelInformation.Start();
+                    }
+
+                    catch (Exception)
+                    {
+                        panelForInformation.BackColor = Color.IndianRed;
+                        maskedTextBox1.Enabled = false;
+                        maskedTextBox1.Clear();
+                        maskedTextBoxValue = previousTextBoxValue = "";
+                        textBox1.Clear();
+
+                        if (linkLabel1.Visible)
+                            linkLabel1.Visible = false;
+
+                        label1.Visible = button2.Visible = true;
+
+                        while (panelForInformation.Width < 800)
+                        {
+                            panelForInformation.Width += 10;
+                            webBrowser1.Width -= 10;
+                        }
+
+                        webBrowser1.Visible = IsWebBrowserVisible = false;
+                        button1.Text = "Развернуть карту";
+                        button2.Focus();
+                    }
+                }
+
+                else
+                {
+                    try
+                    {
+                        Ping ping = new Ping();
+                        PingReply reply = ping.Send(@"ya.ru");
+                        status = reply.Status;
+
+                        panelForInformation.BackColor = Color.IndianRed;
+                        maskedTextBox1.Clear();
+                        textBox1.Clear();
+                        linkLabel1.Visible = true;
+                        maskedTextBox1.Focus();
+                    }
+
+                    catch (Exception)
+                    {
+                        panelForInformation.BackColor = Color.IndianRed;
+                        maskedTextBox1.Enabled = false;
+                        maskedTextBox1.Clear();
+                        maskedTextBoxValue = previousTextBoxValue = "";
+                        textBox1.Clear();
+
+                        if (linkLabel1.Visible)
+                            linkLabel1.Visible = false;
+
+                        label1.Visible = button2.Visible = true;
+
+                        while (panelForInformation.Width < 800)
+                        {
+                            panelForInformation.Width += 10;
+                            webBrowser1.Width -= 10;
+                        }
+
+                        webBrowser1.Visible = IsWebBrowserVisible = false;
+                        button1.Text = "Развернуть карту";
+                        button2.Focus();
+                    }
+                }
+            }
+
+            else
+            {
                 try
                 {
                     Ping ping = new Ping();
@@ -105,73 +246,18 @@ namespace FindByIp
 
                     if (panelForInformation.BackColor != SystemColors.GradientActiveCaption)
                     {
-                        linkLabel1.Visible = false;
+                        label1.Visible = button2.Visible = false;
+                        maskedTextBox1.Enabled = true;
                         panelForInformation.BackColor = SystemColors.GradientActiveCaption;
-                    }
-
-                    webBrowser1.Visible = true;
-
-                    using (WebClient wc = new WebClient())
-                    {
-                        Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{maskedTextBox1.Text}"),
-                            "\"ip\":\"(.*?)\",(.*?)\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"country_phone\":\"(.*?)\",(.*?)\"region\":\"(.*?)\",\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"isp\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\",\"currency\":\"(.*?)\"");
-
-                        webBrowser1.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[11].Value},{match.Groups[12].Value}&zoom=13", UriKind.Absolute);
-
-                        textBox1.Text = $"\r\n\r\n\r\nIP-адрес: {match.Groups[1].Value}\r\nКонтинент: {match.Groups[3].Value}\r\nСтрана: {match.Groups[5].Value}\r\n" +
-                            $"Телефонный код страны: {match.Groups[7].Value}\r\nРегион: {match.Groups[9].Value}\r\nГород: {match.Groups[10].Value}\r\nШирота: {match.Groups[11].Value}" +
-                            $"\r\nДолгота: {match.Groups[12].Value}\r\nПровайдер: {match.Groups[14].Value}\r\nЧасовой пояс: {match.Groups[16].Value}\r\nВалюта: {match.Groups[17].Value}";
-
-                        saveFileDialog.FileName = $"{match.Groups[10].Value}, {match.Groups[12].Value}, {match.Groups[13].Value}";
-                        timerForSlidingPanelInformation.Start();
+                        maskedTextBox1.Focus();
                     }
                 }
 
                 catch (Exception)
                 {
-                    if (linkLabel1.Visible)
-                        linkLabel1.Visible = false;
-
-                    label1.Visible = true;
-                    button2.Visible = true;
+                    return;
                 }
             }
-
-            else if (maskedTextBoxValue.Contains(maskedTextBox1.Text))
-            {
-                try
-                {
-                    Ping ping = new Ping();
-                    PingReply reply = ping.Send(@"ya.ru");
-                    status = reply.Status;
-
-                    if (!webBrowser1.Visible)
-                    {
-                        textBox1.Text = previousTextBoxValue;
-                        webBrowser1.Visible = true;
-                    }
-
-                    timerForSlidingPanelInformation.Start();
-                }
-
-                catch (Exception)
-                {
-                    if (linkLabel1.Visible)
-                        linkLabel1.Visible = false;
-                    label1.Visible = true;
-                    button2.Visible = true;
-                }
-            }
-
-            else
-            {
-                panelForInformation.BackColor = Color.IndianRed;
-                maskedTextBox1.Clear();
-                textBox1.Clear();
-                linkLabel1.Visible = true;
-                maskedTextBox1.Focus();
-            }
-
         }
 
         bool IPAddressExists(string ipForComparison) =>
@@ -181,10 +267,8 @@ namespace FindByIp
         {
             linkLabel1.Visible = false;
             panelForInformation.BackColor = SystemColors.GradientActiveCaption;
-            //maskedTextBoxValue = "";
             maskedTextBox1.Clear();
             textBox1.Clear();
-
             Process.Start("https://ru.wikipedia.org/wiki/IPv4#%D0%9A%D0%BB%D0%B0%D1%81%D1%81%D0%BE%D0%B2%D0%B0%D1%8F_%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%B0%D1%86%D0%B8%D1%8F");
         }
 
@@ -194,8 +278,7 @@ namespace FindByIp
             {
                 if (maskedTextBox1.Enabled)
                 {
-                    maskedTextBox1.Enabled = false;
-                    textBox1.Enabled = false;
+                    maskedTextBox1.Enabled = textBox1.Enabled = false;
                     button1.Text = "Скрыть карту";
                 }
 
@@ -213,9 +296,8 @@ namespace FindByIp
             {
                 if (!maskedTextBox1.Enabled)
                 {
-                    maskedTextBox1.Text = "";
-                    maskedTextBox1.Enabled = true;
-                    textBox1.Enabled = true;
+                    maskedTextBox1.Clear();
+                    maskedTextBox1.Enabled = textBox1.Enabled = true;
                     button1.Text = "Развернуть карту";
                 }
 
@@ -224,10 +306,9 @@ namespace FindByIp
 
                 if (panelForInformation.Width >= 800)
                 {
-                    webBrowser1.Visible = false;
+                    webBrowser1.Visible = IsWebBrowserVisible = false;
                     timerForSlidingPanelInformation.Stop();
                     maskedTextBox1.Focus();
-                    IsWebBrowserVisible = false;
                 }
             }
         }
