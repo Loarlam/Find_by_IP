@@ -123,7 +123,7 @@ namespace FindByIp
                                 $"Телефонный код страны: {match.Groups[7].Value}\r\nРегион: {match.Groups[9].Value}\r\nГород: {match.Groups[10].Value}\r\nШирота: {match.Groups[11].Value}" +
                                 $"\r\nДолгота: {match.Groups[12].Value}\r\nПровайдер: {match.Groups[14].Value}\r\nЧасовой пояс: {match.Groups[16].Value}\r\nВалюта: {match.Groups[17].Value}";
 
-                            saveFileDialog.FileName = $"{match.Groups[10].Value}, {match.Groups[12].Value}, {match.Groups[13].Value}";
+                            saveFileDialog.FileName = $"{match.Groups[10].Value}, {match.Groups[11].Value}, {match.Groups[12].Value}";
                             timerForSlidingPanelInformation.Start();
                         }
                     }
