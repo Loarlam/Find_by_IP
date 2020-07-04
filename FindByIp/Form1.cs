@@ -1,9 +1,7 @@
 ﻿/*
-Планы:
-1. Добавить: перерисовку карты, если пользователь передвинул карту в сторону, только после того, как нажмет на кнопку "Раскрыть карту";
-7. Переименовать переменные;
-8. Если юзер нажмимает пробел в поле maskedTextBox, то он заменяется на ноль.
-*/
+ Правки:
+1. перевести строку ip-адреса в текстовую переменную, и уже в текстовой переменной убрать пробелы.
+ */
 
 using Microsoft.Win32;
 using System;
@@ -27,7 +25,7 @@ namespace FindByIp
         byte digitsInTheFileName;
         short defaultWidthOfPanel;
         string[] filesInFolder;
-        string maskedTextBoxValue, previousTextBoxValue;
+        string maskedTextBoxValue, previousTextBoxValue, ipWithoutSpaces;
         IPStatus status;
         SaveFileDialog saveFileDialog;
 
@@ -44,6 +42,7 @@ namespace FindByIp
             IsWebBrowserVisible = false;
             maskedTextBoxValue = "";
             previousTextBoxValue = "";
+            ipWithoutSpaces = "";
             status = IPStatus.TimedOut;
             webBrowser1.ScriptErrorsSuppressed = true;
 
@@ -93,11 +92,13 @@ namespace FindByIp
 
         void Button1_Click(object sender, EventArgs e)
         {
+            ipWithoutSpaces = maskedTextBox1.Text.Replace(" ", "");
+
             if (!(label1.Visible && button2.Visible))
             {
-                if (!maskedTextBoxValue.Contains(maskedTextBox1.Text) && IPAddressExists(maskedTextBox1.Text) && !label1.Visible)
+                if (!maskedTextBoxValue.Contains(ipWithoutSpaces) && IPAddressExists(ipWithoutSpaces) && !label1.Visible)
                 {
-                    maskedTextBoxValue = maskedTextBox1.Text;
+                    maskedTextBoxValue = ipWithoutSpaces;
 
                     try
                     {
@@ -115,7 +116,7 @@ namespace FindByIp
 
                         using (WebClient wc = new WebClient())
                         {
-                            Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{maskedTextBox1.Text}"), REGULAR_EXPRESSION);
+                            Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{ipWithoutSpaces}"), REGULAR_EXPRESSION);
 
                             webBrowser1.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[11].Value},{match.Groups[12].Value}&zoom=13", UriKind.Absolute);
 
@@ -153,7 +154,7 @@ namespace FindByIp
                     }
                 }
 
-                else if (maskedTextBoxValue.Contains(maskedTextBox1.Text) && !label1.Visible)
+                else if (maskedTextBoxValue.Contains(ipWithoutSpaces) && !label1.Visible)
                 {
                     try
                     {
