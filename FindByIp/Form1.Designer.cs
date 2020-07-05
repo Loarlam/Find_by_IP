@@ -211,7 +211,7 @@
             this.maskedTextBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.maskedTextBox1.Location = new System.Drawing.Point(142, 60);
             this.maskedTextBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.maskedTextBox1.Mask = "###\\.###\\.###\\.###";
+            this.maskedTextBox1.Mask = "999\\.999\\.999\\.999";
             this.maskedTextBox1.Name = "maskedTextBox1";
             this.maskedTextBox1.Size = new System.Drawing.Size(116, 24);
             this.maskedTextBox1.TabIndex = 0;
@@ -251,6 +251,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Информация об IP-адресе";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.contextMenuStrip1.ResumeLayout(false);
             this.contextMenuStrip2.ResumeLayout(false);
             this.panelForScreenshot.ResumeLayout(false);

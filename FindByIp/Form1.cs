@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FindByIp
@@ -16,7 +15,7 @@ namespace FindByIp
     {
         const string PATH_TO_REGISTRY_FOLDER = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION",
                      REGULAR_EXPRESSION = "\"ip\":\"(.*?)\",(.*?)\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"country_phone\":\"(.*?)\",(.*?)\"region\":\"(.*?)\",\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\",\"currency\":\"(.*?)\"";
-        bool IsWebBrowserVisible, counterTrueOrFalse;
+        bool IsWebBrowserVisible;
         byte digitsInTheFileName;
         short defaultWidthOfPanel;
         string[] filesInFolder;
@@ -30,7 +29,6 @@ namespace FindByIp
 
             InitializeComponent();
 
-            counterTrueOrFalse = false;
             defaultWidthOfPanel = Convert.ToInt16(panelForInformation.Width);
             panelForInformation.Width += 400;
             webBrowser1.Width -= 400;
@@ -49,15 +47,9 @@ namespace FindByIp
             };
         }
 
-        async void TimerToSmoothlyRunForm_Tick(object sender, EventArgs e)
+        void TimerToSmoothlyRunForm_Tick(object sender, EventArgs e)
         {
             /*Плавное появление формы*/
-            if (!counterTrueOrFalse)
-            {
-                await Task.Delay(150);
-                counterTrueOrFalse = true;
-            }
-
             if (Opacity == 1)
                 timerToSmoothlyRunForm.Stop();
             else
@@ -113,6 +105,7 @@ namespace FindByIp
                         {
                             Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{ipWithoutSpaces}"), REGULAR_EXPRESSION);
 
+
                             textBox1.Text = $"\r\n\r\n\r\nIP-адрес: {match.Groups[1].Value}\r\nКонтинент: {match.Groups[3].Value}\r\nСтрана: {match.Groups[5].Value}\r\n" +
                                $"Телефонный код страны: {match.Groups[7].Value}\r\nРегион: {match.Groups[9].Value}\r\nГород: {match.Groups[10].Value}\r\nШирота: {match.Groups[11].Value}" +
                                $"\r\nДолгота: {match.Groups[12].Value}\r\nЧасовой пояс: {match.Groups[14].Value}\r\nВалюта: {match.Groups[15].Value}";
@@ -126,6 +119,7 @@ namespace FindByIp
 
                     catch (Exception)
                     {
+                        button1.Text = "Проверить подключение";
                         panelForInformation.BackColor = Color.IndianRed;
                         maskedTextBox1.Enabled = false;
                         maskedTextBox1.Clear();
@@ -144,7 +138,6 @@ namespace FindByIp
                         }
 
                         webBrowser1.Visible = IsWebBrowserVisible = false;
-                        button1.Text = "Развернуть карту";
                         button2.Focus();
                     }
                 }
@@ -168,6 +161,7 @@ namespace FindByIp
 
                     catch (Exception)
                     {
+                        button1.Text = "Проверить подключение";
                         panelForInformation.BackColor = Color.IndianRed;
                         maskedTextBox1.Enabled = false;
                         maskedTextBox1.Clear();
@@ -186,7 +180,6 @@ namespace FindByIp
                         }
 
                         webBrowser1.Visible = IsWebBrowserVisible = false;
-                        button1.Text = "Развернуть карту";
                         button2.Focus();
                     }
                 }
@@ -208,6 +201,7 @@ namespace FindByIp
 
                     catch (Exception)
                     {
+                        button1.Text = "Проверить подключение";
                         panelForInformation.BackColor = Color.IndianRed;
                         maskedTextBox1.Enabled = false;
                         maskedTextBox1.Clear();
@@ -226,7 +220,6 @@ namespace FindByIp
                         }
 
                         webBrowser1.Visible = IsWebBrowserVisible = false;
-                        button1.Text = "Развернуть карту";
                         button2.Focus();
                     }
                 }
@@ -242,6 +235,7 @@ namespace FindByIp
 
                     if (panelForInformation.BackColor != SystemColors.GradientActiveCaption)
                     {
+                        button1.Text = "Развернуть карту";
                         label1.Visible = button2.Visible = false;
                         maskedTextBox1.Enabled = true;
                         panelForInformation.BackColor = SystemColors.GradientActiveCaption;
@@ -347,6 +341,27 @@ namespace FindByIp
         {
             if (WindowState == FormWindowState.Minimized)
                 WindowState = FormWindowState.Normal;
+        }
+
+        void Form1_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                Ping ping = new Ping();
+                PingReply reply = ping.Send(@"ya.ru");
+                status = reply.Status;
+
+                maskedTextBox1.Focus();
+            }
+
+            catch (Exception)
+            {
+                button1.Text = "Проверить подключение";
+                panelForInformation.BackColor = Color.IndianRed;
+                maskedTextBox1.Enabled = false;
+                label1.Visible = button2.Visible = true;
+                button2.Focus();
+            }
         }
 
         void Button2_Click(object sender, EventArgs e) =>
