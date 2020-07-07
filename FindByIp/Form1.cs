@@ -17,10 +17,8 @@ namespace FindByIp
                      REGULAR_EXPRESSION = "\"ip\":\"(.*?)\",(.*?)\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"country_phone\":\"(.*?)\",(.*?)\"region\":\"(.*?)\",\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\",\"currency\":\"(.*?)\"";
         bool IsWebBrowserVisible;
         byte digitsInTheFileName;
-        short defaultWidthOfPanel;
         string[] filesInFolder;
         string maskedTextBoxValue, previousTextBoxValue, ipWithoutSpaces;
-        IPStatus status;
         SaveFileDialog saveFileDialog;
 
         public Form1()
@@ -30,14 +28,12 @@ namespace FindByIp
 
             InitializeComponent();
 
-            defaultWidthOfPanel = Convert.ToInt16(panelForInformation.Width);
             panelForInformation.Width += 400;
             webBrowser1.Width -= 400;
             IsWebBrowserVisible = false;
             maskedTextBoxValue = "";
             previousTextBoxValue = "";
             ipWithoutSpaces = "";
-            status = IPStatus.TimedOut;
             webBrowser1.ScriptErrorsSuppressed = true;
 
             saveFileDialog = new SaveFileDialog
@@ -54,31 +50,61 @@ namespace FindByIp
         {
             try
             {
-                Ping ping = new Ping();
-                PingReply reply = ping.Send(@"ya.ru");
-                status = reply.Status;
-
-                if (Opacity == 1)
-                    timerToSmoothlyRunForm.Stop();
-                else
-                    Opacity += .04;
-
-
+                CheckingPing();
+                RemovingTransparency();
                 maskedTextBox1.Focus();
             }
 
             catch (Exception)
             {
-                if (Opacity == 1)
-                    timerToSmoothlyRunForm.Stop();
-                else
-                    Opacity += .04;
+                RemovingTransparency();
                 button1.Text = "Проверить подключение";
                 panelForInformation.BackColor = Color.IndianRed;
                 maskedTextBox1.Enabled = false;
                 label1.Visible = button2.Visible = true;
                 button2.Focus();
             }          
+        }
+
+        /*Переход от прозрачности к непрозрачности*/
+        void RemovingTransparency()
+        {
+            if (Opacity == 1)
+                timerToSmoothlyRunForm.Stop();
+            else
+                Opacity += .04;
+        }
+
+        /*Пингует до серверов яндекса*/
+        void CheckingPing()
+        {
+            Ping ping = new Ping();
+            PingReply reply = ping.Send(@"ya.ru");
+        }
+
+        /*Действия при отключении от интернета*/
+        void TheInternetHasFallen()
+        {
+            button1.Text = "Проверить подключение";
+            panelForInformation.BackColor = Color.IndianRed;
+            maskedTextBox1.Enabled = false;
+            maskedTextBox1.Clear();
+            maskedTextBoxValue = previousTextBoxValue = "";
+            textBox1.Clear();
+
+            if (linkLabel1.Visible)
+                linkLabel1.Visible = false;
+
+            label1.Visible = button2.Visible = true;
+
+            while (panelForInformation.Width < 800)
+            {
+                panelForInformation.Width += 10;
+                webBrowser1.Width -= 10;
+            }
+
+            webBrowser1.Visible = IsWebBrowserVisible = false;
+            button2.Focus();
         }
 
         /*Отлавливает клавишу Enter; 
@@ -122,9 +148,7 @@ namespace FindByIp
 
                     try
                     {
-                        Ping ping = new Ping();
-                        PingReply reply = ping.Send(@"ya.ru");
-                        status = reply.Status;
+                        CheckingPing();
 
                         if (panelForInformation.BackColor != SystemColors.GradientActiveCaption)
                         {
@@ -137,7 +161,6 @@ namespace FindByIp
                         using (WebClient wc = new WebClient())
                         {
                             Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{ipWithoutSpaces}"), REGULAR_EXPRESSION);
-
 
                             textBox1.Text = $"\r\n\r\n\r\nIP-адрес: {match.Groups[1].Value}\r\nКонтинент: {match.Groups[3].Value}\r\nСтрана: {match.Groups[5].Value}\r\n" +
                                $"Телефонный код страны: {match.Groups[7].Value}\r\nРегион: {match.Groups[9].Value}\r\nГород: {match.Groups[10].Value}\r\nШирота: {match.Groups[11].Value}" +
@@ -152,26 +175,7 @@ namespace FindByIp
 
                     catch (Exception)
                     {
-                        button1.Text = "Проверить подключение";
-                        panelForInformation.BackColor = Color.IndianRed;
-                        maskedTextBox1.Enabled = false;
-                        maskedTextBox1.Clear();
-                        maskedTextBoxValue = previousTextBoxValue = "";
-                        textBox1.Clear();
-
-                        if (linkLabel1.Visible)
-                            linkLabel1.Visible = false;
-
-                        label1.Visible = button2.Visible = true;
-
-                        while (panelForInformation.Width < 800)
-                        {
-                            panelForInformation.Width += 10;
-                            webBrowser1.Width -= 10;
-                        }
-
-                        webBrowser1.Visible = IsWebBrowserVisible = false;
-                        button2.Focus();
+                        TheInternetHasFallen();
                     }
                 }
 
@@ -179,9 +183,7 @@ namespace FindByIp
                 {
                     try
                     {
-                        Ping ping = new Ping();
-                        PingReply reply = ping.Send(@"ya.ru");
-                        status = reply.Status;
+                        CheckingPing();
 
                         if (!webBrowser1.Visible)
                         {
@@ -194,26 +196,7 @@ namespace FindByIp
 
                     catch (Exception)
                     {
-                        button1.Text = "Проверить подключение";
-                        panelForInformation.BackColor = Color.IndianRed;
-                        maskedTextBox1.Enabled = false;
-                        maskedTextBox1.Clear();
-                        maskedTextBoxValue = previousTextBoxValue = "";
-                        textBox1.Clear();
-
-                        if (linkLabel1.Visible)
-                            linkLabel1.Visible = false;
-
-                        label1.Visible = button2.Visible = true;
-
-                        while (panelForInformation.Width < 800)
-                        {
-                            panelForInformation.Width += 10;
-                            webBrowser1.Width -= 10;
-                        }
-
-                        webBrowser1.Visible = IsWebBrowserVisible = false;
-                        button2.Focus();
+                        TheInternetHasFallen();
                     }
                 }
 
@@ -221,10 +204,7 @@ namespace FindByIp
                 {
                     try
                     {
-                        Ping ping = new Ping();
-                        PingReply reply = ping.Send(@"ya.ru");
-                        status = reply.Status;
-
+                        CheckingPing();
                         panelForInformation.BackColor = Color.IndianRed;
                         maskedTextBox1.Clear();
                         textBox1.Clear();
@@ -234,26 +214,7 @@ namespace FindByIp
 
                     catch (Exception)
                     {
-                        button1.Text = "Проверить подключение";
-                        panelForInformation.BackColor = Color.IndianRed;
-                        maskedTextBox1.Enabled = false;
-                        maskedTextBox1.Clear();
-                        maskedTextBoxValue = previousTextBoxValue = "";
-                        textBox1.Clear();
-
-                        if (linkLabel1.Visible)
-                            linkLabel1.Visible = false;
-
-                        label1.Visible = button2.Visible = true;
-
-                        while (panelForInformation.Width < 800)
-                        {
-                            panelForInformation.Width += 10;
-                            webBrowser1.Width -= 10;
-                        }
-
-                        webBrowser1.Visible = IsWebBrowserVisible = false;
-                        button2.Focus();
+                        TheInternetHasFallen();
                     }
                 }
             }
@@ -262,9 +223,7 @@ namespace FindByIp
             {
                 try
                 {
-                    Ping ping = new Ping();
-                    PingReply reply = ping.Send(@"ya.ru");
-                    status = reply.Status;
+                    CheckingPing();
 
                     if (panelForInformation.BackColor != SystemColors.GradientActiveCaption)
                     {
@@ -281,7 +240,7 @@ namespace FindByIp
                     return;
                 }
             }
-        }
+        }                
 
         /*Проверяет ip-адрес на корректность ввода*/
         bool IPAddressExists(string ipForComparison) =>
@@ -302,7 +261,7 @@ namespace FindByIp
                 panelForInformation.Width -= 10;
                 webBrowser1.Width += 10;
 
-                if (panelForInformation.Width <= defaultWidthOfPanel)
+                if (panelForInformation.Width <= 400)
                 {
                     timerForSlidingPanelInformation.Stop();
                     IsWebBrowserVisible = true;
