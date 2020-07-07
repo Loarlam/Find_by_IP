@@ -25,6 +25,7 @@ namespace FindByIp
 
         public Form1()
         {
+            /*До запуска формы добавлет ключ в реестр*/
             Registry.CurrentUser.OpenSubKey(PATH_TO_REGISTRY_FOLDER, true).SetValue("FindByIp.exe", "69632", RegistryValueKind.DWord);
 
             InitializeComponent();
@@ -47,15 +48,42 @@ namespace FindByIp
             };
         }
 
+        /*Плавное появление формы;
+         * проверка пинга для принятия решение: имеется ли интернет или нет*/
         void TimerToSmoothlyRunForm_Tick(object sender, EventArgs e)
         {
-            /*Плавное появление формы*/
-            if (Opacity == 1)
-                timerToSmoothlyRunForm.Stop();
-            else
-                Opacity += .04;
+            try
+            {
+                Ping ping = new Ping();
+                PingReply reply = ping.Send(@"ya.ru");
+                status = reply.Status;
+
+                if (Opacity == 1)
+                    timerToSmoothlyRunForm.Stop();
+                else
+                    Opacity += .04;
+
+
+                maskedTextBox1.Focus();
+            }
+
+            catch (Exception)
+            {
+                if (Opacity == 1)
+                    timerToSmoothlyRunForm.Stop();
+                else
+                    Opacity += .04;
+                button1.Text = "Проверить подключение";
+                panelForInformation.BackColor = Color.IndianRed;
+                maskedTextBox1.Enabled = false;
+                label1.Visible = button2.Visible = true;
+                button2.Focus();
+            }          
         }
 
+        /*Отлавливает клавишу Enter; 
+         * убирает linkLabel о проверке IPv4-адреса; 
+         * копирует в переменную текст из textBox*/
         void MaskedTextBox1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -77,6 +105,11 @@ namespace FindByIp
             }
         }
 
+        /*копирует ip-адрес из maskedTextBox в переменную с заменой пробелов и пропусков;
+         * проверка пинга для принятия решение: имеется ли интернет или нет;
+         * подготавливает отображение google maps в откне webBrowser;        
+         * уменьшает время повторной подгрузки карты;
+         * меняет цвет фона, если имеются неточности в ip-адресе или же отсутствует подключение к интенету*/
         void Button1_Click(object sender, EventArgs e)
         {
             ipWithoutSpaces = maskedTextBox1.Text.Replace(" ", "");
@@ -250,25 +283,19 @@ namespace FindByIp
             }
         }
 
+        /*Проверяет ip-адрес на корректность ввода*/
         bool IPAddressExists(string ipForComparison) =>
             IPAddress.TryParse(ipForComparison, out IPAddress address);
 
-        void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            linkLabel1.Visible = false;
-            panelForInformation.BackColor = SystemColors.GradientActiveCaption;
-            maskedTextBox1.Clear();
-            textBox1.Clear();
-            Process.Start("https://ru.wikipedia.org/wiki/IPv4#%D0%9A%D0%BB%D0%B0%D1%81%D1%81%D0%BE%D0%B2%D0%B0%D1%8F_%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%B0%D1%86%D0%B8%D1%8F");
-        }
-
+        /*Скрывает и раскрывает карту; 
+         * при раскрытии карты блокирует возможность ввода в maskedTextBox*/
         void TimerForSlidingPanelInformation_Tick(object sender, EventArgs e)
         {
             if (!IsWebBrowserVisible)
             {
                 if (maskedTextBox1.Enabled)
                 {
-                    maskedTextBox1.Enabled = textBox1.Enabled = false;
+                    maskedTextBox1.Enabled = false;
                     button1.Text = "Скрыть карту";
                 }
 
@@ -287,7 +314,7 @@ namespace FindByIp
                 if (!maskedTextBox1.Enabled)
                 {
                     maskedTextBox1.Clear();
-                    maskedTextBox1.Enabled = textBox1.Enabled = true;
+                    maskedTextBox1.Enabled = true;
                     button1.Text = "Развернуть карту";
                 }
 
@@ -303,11 +330,30 @@ namespace FindByIp
             }
         }
 
+        /*Скрывает linkLabel после нажатия юзером по ссылке в нём; 
+         * заменяем цвет фона на голубенький; 
+         * очищает textBox и maskedTextBox*/
+        void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            linkLabel1.Visible = false;
+            panelForInformation.BackColor = SystemColors.GradientActiveCaption;
+            maskedTextBox1.Clear();
+            textBox1.Clear();
+            Process.Start("https://ru.wikipedia.org/wiki/IPv4#%D0%9A%D0%BB%D0%B0%D1%81%D1%81%D0%BE%D0%B2%D0%B0%D1%8F_%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%B0%D1%86%D0%B8%D1%8F");
+        }
+
+        /*Делает скриншот с формы; 
+         * предлагает сохранить в форматах: jpg, png, bmp; 
+         * проверяет файлы в папке для сохранения на наличие уже имеющихся с названием Screenshot №;
+         * cохраняет скриншот с обрезкой тени по краям формы в выбранную папку;
+         * запоминает путь сохранения для последующих сохранений по этому же пути;
+         * после сохранения открывает папку для просмотра*/
         void ScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Bitmap screenshot = new Bitmap(Width - 16, Height - 9);
             Graphics graphics = Graphics.FromImage(screenshot);
-            graphics.CopyFromScreen(Location.X + 8, Location.Y + 1, 0, 0, screenshot.Size); /*обрезаем тень по краям формы для точноты отображения в скриншоте*/
+            /*обрезает тень по краям формы для скриншота*/
+            graphics.CopyFromScreen(Location.X + 8, Location.Y + 1, 0, 0, screenshot.Size); 
 
             saveFileDialog.Title = "Сохранение скриншота";
             saveFileDialog.Filter = "JPEG (*.jpg; *.jpeg; *.jpe) | *.jpg; *jpeg; *.jpe|PNG (*.png) | *.png|BMP (*.bmp) | *.bmp";
@@ -337,39 +383,22 @@ namespace FindByIp
             }
         }
 
+        /*При двойном клике по значку приложения в трей, приложение разворачивается из свернутого положения */
         void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
                 WindowState = FormWindowState.Normal;
         }
 
-        void Form1_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                Ping ping = new Ping();
-                PingReply reply = ping.Send(@"ya.ru");
-                status = reply.Status;
-
-                maskedTextBox1.Focus();
-            }
-
-            catch (Exception)
-            {
-                button1.Text = "Проверить подключение";
-                panelForInformation.BackColor = Color.IndianRed;
-                maskedTextBox1.Enabled = false;
-                label1.Visible = button2.Visible = true;
-                button2.Focus();
-            }
-        }
-
+        /*Клик по кнопке запускает окно сетевых подключений для возможности саморучно переподключиться к интернету*/
         void Button2_Click(object sender, EventArgs e) =>
             Process.Start("control.exe", "netconnections");
 
+        /*Клик правой кнопкой мыши по значку приложения в трей предоставит меню с единственным параметром - Close*/
         void CloseToolStripMenuItem_Click(object sender, EventArgs e) =>
             Close();
 
+        /*Перед закрытием формы удаляет ключ из реестра*/
         void Form1_FormClosing(object sender, FormClosingEventArgs e) =>
             Registry.CurrentUser.OpenSubKey(PATH_TO_REGISTRY_FOLDER, true).DeleteValue("FindByIp.exe");
     }
