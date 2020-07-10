@@ -18,7 +18,7 @@ namespace FindByIp
         bool IsWebBrowserVisible;
         byte digitsInTheFileName;
         string[] filesInFolder;
-        string maskedTextBoxValue, previousTextBoxValue, ipWithoutSpaces;
+        string previousIpv4, previousInformationAboutIpAddress, ipv4WithoutSpaces;
         SaveFileDialog saveFileDialog;
 
         public Form1()
@@ -29,12 +29,12 @@ namespace FindByIp
             InitializeComponent();
 
             panelForInformation.Width += 400;
-            webBrowser1.Width -= 400;
+            webBrowserWithMap.Width -= 400;
             IsWebBrowserVisible = false;
-            maskedTextBoxValue = "";
-            previousTextBoxValue = "";
-            ipWithoutSpaces = "";
-            webBrowser1.ScriptErrorsSuppressed = true;
+            previousIpv4 = "";
+            previousInformationAboutIpAddress = "";
+            ipv4WithoutSpaces = "";
+            webBrowserWithMap.ScriptErrorsSuppressed = true;
 
             saveFileDialog = new SaveFileDialog
             {
@@ -52,17 +52,17 @@ namespace FindByIp
             {
                 CheckingPing();
                 RemovingTransparency();
-                maskedTextBox1.Focus();
+                maskedTextBoxIpv4Field.Focus();
             }
 
             catch (Exception)
             {
                 RemovingTransparency();
-                button1.Text = "Проверить подключение";
+                buttonWithMapAndPingCheck.Text = "Проверить подключение";
                 panelForInformation.BackColor = Color.IndianRed;
-                maskedTextBox1.Enabled = false;
-                label1.Visible = button2.Visible = true;
-                button2.Focus();
+                maskedTextBoxIpv4Field.Enabled = false;
+                labelErrorNoIntenterConnection.Visible = buttonWithNetworkConnectons.Visible = true;
+                buttonWithNetworkConnectons.Focus();
             }          
         }
 
@@ -79,55 +79,55 @@ namespace FindByIp
         void CheckingPing()
         {
             Ping ping = new Ping();
-            PingReply reply = ping.Send(@"ya.ru");
+            ping.Send(@"ya.ru");
         }
 
         /*Действия при отключении от интернета*/
         void TheInternetHasFallen()
         {
-            button1.Text = "Проверить подключение";
+            buttonWithMapAndPingCheck.Text = "Проверить подключение";
             panelForInformation.BackColor = Color.IndianRed;
-            maskedTextBox1.Enabled = false;
-            maskedTextBox1.Clear();
-            maskedTextBoxValue = previousTextBoxValue = "";
-            textBox1.Clear();
+            maskedTextBoxIpv4Field.Enabled = false;
+            maskedTextBoxIpv4Field.Clear();
+            previousIpv4 = previousInformationAboutIpAddress = "";
+            textBoxWithInformationAboutIpAddress.Clear();
 
-            if (linkLabel1.Visible)
-                linkLabel1.Visible = false;
+            if (linkLabelErrorWithWiki.Visible)
+                linkLabelErrorWithWiki.Visible = false;
 
-            label1.Visible = button2.Visible = true;
+            labelErrorNoIntenterConnection.Visible = buttonWithNetworkConnectons.Visible = true;
 
             while (panelForInformation.Width < 800)
             {
                 panelForInformation.Width += 10;
-                webBrowser1.Width -= 10;
+                webBrowserWithMap.Width -= 10;
             }
 
-            webBrowser1.Visible = IsWebBrowserVisible = false;
-            button2.Focus();
+            webBrowserWithMap.Visible = IsWebBrowserVisible = false;
+            buttonWithNetworkConnectons.Focus();
         }
 
         /*Отлавливает клавишу Enter; 
          * убирает linkLabel о проверке IPv4-адреса; 
          * копирует в переменную текст из textBox*/
-        void MaskedTextBox1_KeyDown(object sender, KeyEventArgs e)
+        void MaskedTextBoxIpField_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
                 e.Handled = true;
-                Button1_Click(sender, e);
+                ButtonWithMapAndPingCheck_Click(sender, e);
             }
 
-            else if (linkLabel1.Visible)
+            else if (linkLabelErrorWithWiki.Visible)
             {
-                linkLabel1.Visible = false;
+                linkLabelErrorWithWiki.Visible = false;
                 panelForInformation.BackColor = SystemColors.GradientActiveCaption;
             }
 
-            else if (textBox1.Text != "")
+            else if (textBoxWithInformationAboutIpAddress.Text != "")
             {
-                previousTextBoxValue = textBox1.Text;
-                textBox1.Text = "";
+                previousInformationAboutIpAddress = textBoxWithInformationAboutIpAddress.Text;
+                textBoxWithInformationAboutIpAddress.Text = "";
             }
         }
 
@@ -136,15 +136,15 @@ namespace FindByIp
          * подготавливает отображение google maps в откне webBrowser;        
          * уменьшает время повторной подгрузки карты;
          * меняет цвет фона, если имеются неточности в ip-адресе или же отсутствует подключение к интенету*/
-        void Button1_Click(object sender, EventArgs e)
+        void ButtonWithMapAndPingCheck_Click(object sender, EventArgs e)
         {
-            ipWithoutSpaces = maskedTextBox1.Text.Replace(" ", "");
+            ipv4WithoutSpaces = maskedTextBoxIpv4Field.Text.Replace(" ", "");
 
-            if (!(label1.Visible && button2.Visible))
+            if (!(labelErrorNoIntenterConnection.Visible && buttonWithNetworkConnectons.Visible))
             {
-                if (!maskedTextBoxValue.Contains(ipWithoutSpaces) && IPAddressExists(ipWithoutSpaces) && !label1.Visible)
+                if (!previousIpv4.Contains(ipv4WithoutSpaces) && IPAddressExists(ipv4WithoutSpaces) && !labelErrorNoIntenterConnection.Visible)
                 {
-                    maskedTextBoxValue = ipWithoutSpaces;
+                    previousIpv4 = ipv4WithoutSpaces;
 
                     try
                     {
@@ -152,21 +152,21 @@ namespace FindByIp
 
                         if (panelForInformation.BackColor != SystemColors.GradientActiveCaption)
                         {
-                            linkLabel1.Visible = false;
+                            linkLabelErrorWithWiki.Visible = false;
                             panelForInformation.BackColor = SystemColors.GradientActiveCaption;
                         }
 
-                        webBrowser1.Visible = true;
+                        webBrowserWithMap.Visible = true;
 
                         using (WebClient wc = new WebClient())
                         {
-                            Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{ipWithoutSpaces}"), REGULAR_EXPRESSION);
+                            Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{ipv4WithoutSpaces}"), REGULAR_EXPRESSION);
 
-                            textBox1.Text = $"\r\n\r\n\r\nIP-адрес: {match.Groups[1].Value}\r\nКонтинент: {match.Groups[3].Value}\r\nСтрана: {match.Groups[5].Value}\r\n" +
+                            textBoxWithInformationAboutIpAddress.Text = $"\r\n\r\n\r\nIP-адрес: {match.Groups[1].Value}\r\nКонтинент: {match.Groups[3].Value}\r\nСтрана: {match.Groups[5].Value}\r\n" +
                                $"Телефонный код страны: {match.Groups[7].Value}\r\nРегион: {match.Groups[9].Value}\r\nГород: {match.Groups[10].Value}\r\nШирота: {match.Groups[11].Value}" +
                                $"\r\nДолгота: {match.Groups[12].Value}\r\nЧасовой пояс: {match.Groups[14].Value}\r\nВалюта: {match.Groups[15].Value}";
 
-                            webBrowser1.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[11].Value},{match.Groups[12].Value}&zoom=13", UriKind.Absolute);
+                            webBrowserWithMap.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[11].Value},{match.Groups[12].Value}&zoom=13", UriKind.Absolute);
 
                             saveFileDialog.FileName = $"{match.Groups[10].Value}, {match.Groups[11].Value}, {match.Groups[12].Value}";
                             timerForSlidingPanelInformation.Start();
@@ -179,16 +179,16 @@ namespace FindByIp
                     }
                 }
 
-                else if (maskedTextBoxValue.Contains(ipWithoutSpaces) && !label1.Visible)
+                else if (previousIpv4.Contains(ipv4WithoutSpaces) && !labelErrorNoIntenterConnection.Visible)
                 {
                     try
                     {
                         CheckingPing();
 
-                        if (!webBrowser1.Visible)
+                        if (!webBrowserWithMap.Visible)
                         {
-                            textBox1.Text = previousTextBoxValue;
-                            webBrowser1.Visible = true;
+                            textBoxWithInformationAboutIpAddress.Text = previousInformationAboutIpAddress;
+                            webBrowserWithMap.Visible = true;
                         }
 
                         timerForSlidingPanelInformation.Start();
@@ -206,10 +206,10 @@ namespace FindByIp
                     {
                         CheckingPing();
                         panelForInformation.BackColor = Color.IndianRed;
-                        maskedTextBox1.Clear();
-                        textBox1.Clear();
-                        linkLabel1.Visible = true;
-                        maskedTextBox1.Focus();
+                        maskedTextBoxIpv4Field.Clear();
+                        textBoxWithInformationAboutIpAddress.Clear();
+                        linkLabelErrorWithWiki.Visible = true;
+                        maskedTextBoxIpv4Field.Focus();
                     }
 
                     catch (Exception)
@@ -227,11 +227,11 @@ namespace FindByIp
 
                     if (panelForInformation.BackColor != SystemColors.GradientActiveCaption)
                     {
-                        button1.Text = "Развернуть карту";
-                        label1.Visible = button2.Visible = false;
-                        maskedTextBox1.Enabled = true;
+                        buttonWithMapAndPingCheck.Text = "Развернуть карту";
+                        labelErrorNoIntenterConnection.Visible = buttonWithNetworkConnectons.Visible = false;
+                        maskedTextBoxIpv4Field.Enabled = true;
                         panelForInformation.BackColor = SystemColors.GradientActiveCaption;
-                        maskedTextBox1.Focus();
+                        maskedTextBoxIpv4Field.Focus();
                     }
                 }
 
@@ -252,14 +252,14 @@ namespace FindByIp
         {
             if (!IsWebBrowserVisible)
             {
-                if (maskedTextBox1.Enabled)
+                if (maskedTextBoxIpv4Field.Enabled)
                 {
-                    maskedTextBox1.Enabled = false;
-                    button1.Text = "Скрыть карту";
+                    maskedTextBoxIpv4Field.Enabled = false;
+                    buttonWithMapAndPingCheck.Text = "Скрыть карту";
                 }
 
                 panelForInformation.Width -= 10;
-                webBrowser1.Width += 10;
+                webBrowserWithMap.Width += 10;
 
                 if (panelForInformation.Width <= 400)
                 {
@@ -270,21 +270,21 @@ namespace FindByIp
 
             else
             {
-                if (!maskedTextBox1.Enabled)
+                if (!maskedTextBoxIpv4Field.Enabled)
                 {
-                    maskedTextBox1.Clear();
-                    maskedTextBox1.Enabled = true;
-                    button1.Text = "Развернуть карту";
+                    maskedTextBoxIpv4Field.Clear();
+                    maskedTextBoxIpv4Field.Enabled = true;
+                    buttonWithMapAndPingCheck.Text = "Развернуть карту";
                 }
 
                 panelForInformation.Width += 10;
-                webBrowser1.Width -= 10;
+                webBrowserWithMap.Width -= 10;
 
                 if (panelForInformation.Width >= 800)
                 {
-                    webBrowser1.Visible = IsWebBrowserVisible = false;
+                    webBrowserWithMap.Visible = IsWebBrowserVisible = false;
                     timerForSlidingPanelInformation.Stop();
-                    maskedTextBox1.Focus();
+                    maskedTextBoxIpv4Field.Focus();
                 }
             }
         }
@@ -292,12 +292,12 @@ namespace FindByIp
         /*Скрывает linkLabel после нажатия юзером по ссылке в нём; 
          * заменяем цвет фона на голубенький; 
          * очищает textBox и maskedTextBox*/
-        void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        void LinkLabelErrorWithWiki_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            linkLabel1.Visible = false;
+            linkLabelErrorWithWiki.Visible = false;
             panelForInformation.BackColor = SystemColors.GradientActiveCaption;
-            maskedTextBox1.Clear();
-            textBox1.Clear();
+            maskedTextBoxIpv4Field.Clear();
+            textBoxWithInformationAboutIpAddress.Clear();
             Process.Start("https://ru.wikipedia.org/wiki/IPv4#%D0%9A%D0%BB%D0%B0%D1%81%D1%81%D0%BE%D0%B2%D0%B0%D1%8F_%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%B0%D1%86%D0%B8%D1%8F");
         }
 
@@ -317,7 +317,7 @@ namespace FindByIp
             saveFileDialog.Title = "Сохранение скриншота";
             saveFileDialog.Filter = "JPEG (*.jpg; *.jpeg; *.jpe) | *.jpg; *jpeg; *.jpe|PNG (*.png) | *.png|BMP (*.bmp) | *.bmp";
 
-            if (textBox1.Text == "")
+            if (textBoxWithInformationAboutIpAddress.Text == "")
             {
                 filesInFolder = Directory.GetFiles(saveFileDialog.InitialDirectory, "Screenshot №*");
 
@@ -337,20 +337,19 @@ namespace FindByIp
                 saveFileDialog.InitialDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                 screenshot.Save(saveFileDialog.FileName);
                 saveFileDialog.FileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
-
                 Process.Start(saveFileDialog.InitialDirectory);
             }
         }
 
         /*При двойном клике по значку приложения в трей, приложение разворачивается из свернутого положения */
-        void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        void NotifyIconInTray_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
                 WindowState = FormWindowState.Normal;
         }
 
         /*Клик по кнопке запускает окно сетевых подключений для возможности саморучно переподключиться к интернету*/
-        void Button2_Click(object sender, EventArgs e) =>
+        void ButtonWithNetworkConnections_Click(object sender, EventArgs e) =>
             Process.Start("control.exe", "netconnections");
 
         /*Клик правой кнопкой мыши по значку приложения в трей предоставит меню с единственным параметром - Close*/
