@@ -28,8 +28,8 @@ namespace FindByIp
 
             InitializeComponent();
 
-            panelForInformation.Width += 400;
-            webBrowserWithMap.Width -= 400;
+            panelForInformation.Width = ClientSize.Width;
+            webBrowserWithMap.Width -= webBrowserWithMap.Width;
             IsWebBrowserVisible = false;
             previousIpv4 = "";
             previousInformationAboutIpAddress = "";
@@ -63,7 +63,7 @@ namespace FindByIp
                 maskedTextBoxIpv4Field.Enabled = false;
                 labelErrorNoIntenterConnection.Visible = buttonWithNetworkConnectons.Visible = true;
                 buttonWithNetworkConnectons.Focus();
-            }          
+            }
         }
 
         /*Переход от прозрачности к непрозрачности*/
@@ -97,7 +97,7 @@ namespace FindByIp
 
             labelErrorNoIntenterConnection.Visible = buttonWithNetworkConnectons.Visible = true;
 
-            while (panelForInformation.Width < 800)
+            while (panelForInformation.Width < ClientSize.Width)
             {
                 panelForInformation.Width += 10;
                 webBrowserWithMap.Width -= 10;
@@ -240,7 +240,7 @@ namespace FindByIp
                     return;
                 }
             }
-        }                
+        }
 
         /*Проверяет ip-адрес на корректность ввода*/
         bool IPAddressExists(string ipForComparison) =>
@@ -261,7 +261,7 @@ namespace FindByIp
                 panelForInformation.Width -= 10;
                 webBrowserWithMap.Width += 10;
 
-                if (panelForInformation.Width <= 400)
+                if (panelForInformation.Width <= ClientSize.Width / 2)
                 {
                     timerForSlidingPanelInformation.Stop();
                     IsWebBrowserVisible = true;
@@ -280,7 +280,7 @@ namespace FindByIp
                 panelForInformation.Width += 10;
                 webBrowserWithMap.Width -= 10;
 
-                if (panelForInformation.Width >= 800)
+                if (panelForInformation.Width >= ClientSize.Width)
                 {
                     webBrowserWithMap.Visible = IsWebBrowserVisible = false;
                     timerForSlidingPanelInformation.Stop();
@@ -312,7 +312,7 @@ namespace FindByIp
             Bitmap screenshot = new Bitmap(Width - 16, Height - 9);
             Graphics graphics = Graphics.FromImage(screenshot);
             /*обрезает тень по краям формы для скриншота*/
-            graphics.CopyFromScreen(Location.X + 8, Location.Y + 1, 0, 0, screenshot.Size); 
+            graphics.CopyFromScreen(Location.X + 8, Location.Y + 1, 0, 0, screenshot.Size);
 
             saveFileDialog.Title = "Сохранение скриншота";
             saveFileDialog.Filter = "JPEG (*.jpg; *.jpeg; *.jpe) | *.jpg; *jpeg; *.jpe|PNG (*.png) | *.png|BMP (*.bmp) | *.bmp";
