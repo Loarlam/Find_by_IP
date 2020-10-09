@@ -31,9 +31,7 @@ namespace FindByIp
             panelForInformation.Width = ClientSize.Width;
             webBrowserWithMap.Width -= webBrowserWithMap.Width;
             IsWebBrowserVisible = false;
-            previousIpv4 = "";
-            previousInformationAboutIpAddress = "";
-            ipv4WithoutSpaces = "";
+            previousIpv4 = previousInformationAboutIpAddress = ipv4WithoutSpaces = "";            
             webBrowserWithMap.ScriptErrorsSuppressed = true;
 
             saveFileDialog = new SaveFileDialog
@@ -87,9 +85,12 @@ namespace FindByIp
         {
             buttonWithMapAndPingCheck.Text = "Проверить подключение";
             panelForInformation.BackColor = Color.IndianRed;
+
+            if (textBoxWithInformationAboutIpAddress.Text != "")
+                previousInformationAboutIpAddress = textBoxWithInformationAboutIpAddress.Text;
+
             maskedTextBoxIpv4Field.Enabled = false;
             maskedTextBoxIpv4Field.Clear();
-            previousIpv4 = previousInformationAboutIpAddress = "";
             textBoxWithInformationAboutIpAddress.Clear();
 
             if (linkLabelErrorWithWiki.Visible)
@@ -127,7 +128,7 @@ namespace FindByIp
             else if (textBoxWithInformationAboutIpAddress.Text != "")
             {
                 previousInformationAboutIpAddress = textBoxWithInformationAboutIpAddress.Text;
-                textBoxWithInformationAboutIpAddress.Text = "";
+                textBoxWithInformationAboutIpAddress.Clear();
             }
         }
 
@@ -205,9 +206,18 @@ namespace FindByIp
                     try
                     {
                         CheckingPing();
+
                         panelForInformation.BackColor = Color.IndianRed;
                         maskedTextBoxIpv4Field.Clear();
-                        textBoxWithInformationAboutIpAddress.Clear();
+
+                        if (textBoxWithInformationAboutIpAddress.Text != "")
+                        {
+                            previousInformationAboutIpAddress = textBoxWithInformationAboutIpAddress.Text;
+                            textBoxWithInformationAboutIpAddress.Clear();
+                            linkLabelErrorWithWiki.Visible = true;
+                            maskedTextBoxIpv4Field.Focus();
+                        }
+                        
                         linkLabelErrorWithWiki.Visible = true;
                         maskedTextBoxIpv4Field.Focus();
                     }
