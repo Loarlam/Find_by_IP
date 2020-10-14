@@ -35,8 +35,9 @@
             this.notifyIconInTray = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStripClose = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenuStripScreenshot = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStripScreenshotOrText = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelForScreenshot = new System.Windows.Forms.Panel();
             this.panelForInformation = new System.Windows.Forms.Panel();
             this.buttonWithNetworkConnectons = new System.Windows.Forms.Button();
@@ -47,7 +48,7 @@
             this.maskedTextBoxIpv4Field = new System.Windows.Forms.MaskedTextBox();
             this.webBrowserWithMap = new System.Windows.Forms.WebBrowser();
             this.contextMenuStripClose.SuspendLayout();
-            this.contextMenuStripScreenshot.SuspendLayout();
+            this.contextMenuStripScreenshotOrText.SuspendLayout();
             this.panelForScreenshot.SuspendLayout();
             this.panelForInformation.SuspendLayout();
             this.SuspendLayout();
@@ -85,19 +86,27 @@
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
-            // contextMenuStripScreenshot
+            // contextMenuStripScreenshotOrText
             // 
-            this.contextMenuStripScreenshot.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.screenshotToolStripMenuItem});
-            this.contextMenuStripScreenshot.Name = "contextMenuStrip2";
-            this.contextMenuStripScreenshot.Size = new System.Drawing.Size(133, 26);
+            this.contextMenuStripScreenshotOrText.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.screenshotToolStripMenuItem,
+            this.saveTextToolStripMenuItem});
+            this.contextMenuStripScreenshotOrText.Name = "contextMenuStrip2";
+            this.contextMenuStripScreenshotOrText.Size = new System.Drawing.Size(148, 48);
             // 
             // screenshotToolStripMenuItem
             // 
             this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
-            this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.screenshotToolStripMenuItem.Text = "Screenshot";
             this.screenshotToolStripMenuItem.Click += new System.EventHandler(this.ScreenshotToolStripMenuItem_Click);
+            // 
+            // saveTextToolStripMenuItem
+            // 
+            this.saveTextToolStripMenuItem.Name = "saveTextToolStripMenuItem";
+            this.saveTextToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.saveTextToolStripMenuItem.Text = "Save IPv4 info";
+            this.saveTextToolStripMenuItem.Visible = false;
             // 
             // panelForScreenshot
             // 
@@ -112,7 +121,7 @@
             // panelForInformation
             // 
             this.panelForInformation.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.panelForInformation.ContextMenuStrip = this.contextMenuStripScreenshot;
+            this.panelForInformation.ContextMenuStrip = this.contextMenuStripScreenshotOrText;
             this.panelForInformation.Controls.Add(this.buttonWithNetworkConnectons);
             this.panelForInformation.Controls.Add(this.labelErrorNoIntenterConnection);
             this.panelForInformation.Controls.Add(this.linkLabelErrorWithWiki);
@@ -125,11 +134,13 @@
             this.panelForInformation.Name = "panelForInformation";
             this.panelForInformation.Size = new System.Drawing.Size(400, 561);
             this.panelForInformation.TabIndex = 4;
+            this.panelForInformation.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PanelForInformation_MouseMove);
             // 
             // buttonWithNetworkConnectons
             // 
             this.buttonWithNetworkConnectons.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.buttonWithNetworkConnectons.BackColor = System.Drawing.SystemColors.Window;
+            this.buttonWithNetworkConnectons.ContextMenuStrip = this.contextMenuStripScreenshotOrText;
             this.buttonWithNetworkConnectons.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonWithNetworkConnectons.Location = new System.Drawing.Point(89, 280);
             this.buttonWithNetworkConnectons.Margin = new System.Windows.Forms.Padding(0);
@@ -146,6 +157,7 @@
             this.labelErrorNoIntenterConnection.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.labelErrorNoIntenterConnection.AutoSize = true;
             this.labelErrorNoIntenterConnection.BackColor = System.Drawing.SystemColors.Window;
+            this.labelErrorNoIntenterConnection.ContextMenuStrip = this.contextMenuStripScreenshotOrText;
             this.labelErrorNoIntenterConnection.ForeColor = System.Drawing.Color.IndianRed;
             this.labelErrorNoIntenterConnection.Location = new System.Drawing.Point(60, 244);
             this.labelErrorNoIntenterConnection.Name = "labelErrorNoIntenterConnection";
@@ -159,6 +171,7 @@
             this.linkLabelErrorWithWiki.ActiveLinkColor = System.Drawing.Color.Blue;
             this.linkLabelErrorWithWiki.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.linkLabelErrorWithWiki.BackColor = System.Drawing.SystemColors.Window;
+            this.linkLabelErrorWithWiki.ContextMenuStrip = this.contextMenuStripScreenshotOrText;
             this.linkLabelErrorWithWiki.DisabledLinkColor = System.Drawing.Color.Blue;
             this.linkLabelErrorWithWiki.ForeColor = System.Drawing.Color.IndianRed;
             this.linkLabelErrorWithWiki.LinkArea = new System.Windows.Forms.LinkArea(37, 26);
@@ -181,11 +194,13 @@
             // 
             this.textBoxWithInformationAboutIpAddress.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.textBoxWithInformationAboutIpAddress.BackColor = System.Drawing.SystemColors.Window;
+            this.textBoxWithInformationAboutIpAddress.Enabled = false;
             this.textBoxWithInformationAboutIpAddress.Location = new System.Drawing.Point(39, 111);
             this.textBoxWithInformationAboutIpAddress.Margin = new System.Windows.Forms.Padding(0);
             this.textBoxWithInformationAboutIpAddress.Multiline = true;
             this.textBoxWithInformationAboutIpAddress.Name = "textBoxWithInformationAboutIpAddress";
             this.textBoxWithInformationAboutIpAddress.ReadOnly = true;
+            this.textBoxWithInformationAboutIpAddress.ShortcutsEnabled = false;
             this.textBoxWithInformationAboutIpAddress.Size = new System.Drawing.Size(323, 320);
             this.textBoxWithInformationAboutIpAddress.TabIndex = 2;
             this.textBoxWithInformationAboutIpAddress.TabStop = false;
@@ -195,6 +210,7 @@
             // 
             this.buttonWithMapAndPingCheck.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.buttonWithMapAndPingCheck.BackColor = System.Drawing.SystemColors.Window;
+            this.buttonWithMapAndPingCheck.ContextMenuStrip = this.contextMenuStripScreenshotOrText;
             this.buttonWithMapAndPingCheck.FlatAppearance.BorderSize = 0;
             this.buttonWithMapAndPingCheck.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonWithMapAndPingCheck.Location = new System.Drawing.Point(89, 464);
@@ -220,7 +236,7 @@
             // 
             // webBrowserWithMap
             // 
-            this.webBrowserWithMap.ContextMenuStrip = this.contextMenuStripScreenshot;
+            this.webBrowserWithMap.ContextMenuStrip = this.contextMenuStripScreenshotOrText;
             this.webBrowserWithMap.Dock = System.Windows.Forms.DockStyle.Right;
             this.webBrowserWithMap.IsWebBrowserContextMenuEnabled = false;
             this.webBrowserWithMap.Location = new System.Drawing.Point(400, 0);
@@ -252,7 +268,7 @@
             this.Text = "Информация об IP-адресе";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.contextMenuStripClose.ResumeLayout(false);
-            this.contextMenuStripScreenshot.ResumeLayout(false);
+            this.contextMenuStripScreenshotOrText.ResumeLayout(false);
             this.panelForScreenshot.ResumeLayout(false);
             this.panelForInformation.ResumeLayout(false);
             this.panelForInformation.PerformLayout();
@@ -266,7 +282,7 @@
         private System.Windows.Forms.NotifyIcon notifyIconInTray;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripClose;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripScreenshot;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripScreenshotOrText;
         private System.Windows.Forms.ToolStripMenuItem screenshotToolStripMenuItem;
         private System.Windows.Forms.Panel panelForScreenshot;
         private System.Windows.Forms.Panel panelForInformation;
@@ -277,6 +293,7 @@
         private System.Windows.Forms.LinkLabel linkLabelErrorWithWiki;
         private System.Windows.Forms.Button buttonWithNetworkConnectons;
         private System.Windows.Forms.Label labelErrorNoIntenterConnection;
+        private System.Windows.Forms.ToolStripMenuItem saveTextToolStripMenuItem;
     }
 }
 

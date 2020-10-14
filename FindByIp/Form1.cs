@@ -31,7 +31,7 @@ namespace FindByIp
             panelForInformation.Width = ClientSize.Width;
             webBrowserWithMap.Width -= webBrowserWithMap.Width;
             IsWebBrowserVisible = false;
-            previousIpv4 = previousInformationAboutIpAddress = ipv4WithoutSpaces = "";            
+            previousIpv4 = previousInformationAboutIpAddress = ipv4WithoutSpaces = "";
             webBrowserWithMap.ScriptErrorsSuppressed = true;
 
             saveFileDialog = new SaveFileDialog
@@ -217,7 +217,7 @@ namespace FindByIp
                             linkLabelErrorWithWiki.Visible = true;
                             maskedTextBoxIpv4Field.Focus();
                         }
-                        
+
                         linkLabelErrorWithWiki.Visible = true;
                         maskedTextBoxIpv4Field.Focus();
                     }
@@ -356,6 +356,29 @@ namespace FindByIp
         {
             if (WindowState == FormWindowState.Minimized)
                 WindowState = FormWindowState.Normal;
+        }
+
+        void PanelForInformation_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (((panelForInformation.Width == panelForScreenshot.Width)
+                && (textBoxWithInformationAboutIpAddress.Text != "")
+                && ((MousePosition.X > 8 + Location.X + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
+                && (MousePosition.X < 8 + Location.X + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2))
+                && ((MousePosition.Y > 22 + Location.Y + panelForScreenshot.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
+                && (MousePosition.Y < 21 + Location.Y + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2)))
+                ||
+                (panelForInformation.Width == panelForScreenshot.Width / 2)
+                && (textBoxWithInformationAboutIpAddress.Text != "")
+                && (MousePosition.X > 8 + Location.X + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
+                && (MousePosition.X < 8 + Location.X + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2)
+                && (MousePosition.Y > 22 + Location.Y + panelForInformation.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
+                && (MousePosition.Y < 21 + Location.Y + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2))
+            {
+                saveTextToolStripMenuItem.Visible = true;
+            }
+
+            else
+                saveTextToolStripMenuItem.Visible = false;
         }
 
         /*Клик по кнопке запускает окно сетевых подключений для возможности саморучно переподключиться к интернету*/
