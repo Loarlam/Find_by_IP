@@ -359,6 +359,7 @@ namespace FindByIp
                 WindowState = FormWindowState.Normal;
         }
 
+        /*Отлавливается позицию мыши внутри panelForInformation для определения внутриконтурных координат отключенного textBoxWithInformationAboutIpAddress*/
         void PanelForInformation_MouseMove(object sender, MouseEventArgs e)
         {
             if (((panelForInformation.Width == panelForScreenshot.Width)
