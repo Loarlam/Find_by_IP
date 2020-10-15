@@ -170,6 +170,7 @@ namespace FindByIp
                             webBrowserWithMap.Url = new Uri($"https://www.google.com/maps/@?api=1&map_action=map&center={match.Groups[10].Value},{match.Groups[11].Value}&zoom=13", UriKind.Absolute);
 
                             saveFileDialog.FileName = $"{match.Groups[9].Value}, {match.Groups[10].Value}, {match.Groups[11].Value}";
+
                             timerForSlidingPanelInformation.Start();
                         }
                     }
@@ -325,7 +326,7 @@ namespace FindByIp
             graphics.CopyFromScreen(Location.X + 8, Location.Y + 1, 0, 0, screenshot.Size);
 
             saveFileDialog.Title = "Сохранение скриншота";
-            saveFileDialog.Filter = "JPEG (*.jpg; *.jpeg; *.jpe) | *.jpg; *jpeg; *.jpe|PNG (*.png) | *.png|BMP (*.bmp) | *.bmp";
+            saveFileDialog.Filter = "JPEG (*.jpg; *.jpeg; *.jpe)|*.jpg; *jpeg; *.jpe|PNG (*.png)|*.png|BMP (*.bmp)|*.bmp";
 
             if (textBoxWithInformationAboutIpAddress.Text == "")
             {
@@ -379,6 +380,26 @@ namespace FindByIp
 
             else
                 saveTextToolStripMenuItem.Visible = false;
+        }
+
+        /*Клик по пункту "Save IPv4 info" в контекстном меню позволяет сохранять текстовую информацию об Ipv4-адресе*/
+        async void SaveTextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string text = string.Join("\r\n", textBoxWithInformationAboutIpAddress.Lines).Trim();
+            saveFileDialog.Title = "Сохранение скриншота";
+            saveFileDialog.Filter = "TXT (*.txt)|*.txt";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                saveFileDialog.InitialDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+
+                using (StreamWriter streamWriter = new StreamWriter(Path.GetFullPath(saveFileDialog.FileName)))
+                    await streamWriter.WriteAsync(text);
+
+                Process.Start(saveFileDialog.InitialDirectory);
+            }
+
+            saveFileDialog.FileName = saveFileDialog.FileName.Substring(saveFileDialog.FileName.LastIndexOf(@"\") + 1).Replace(".txt", "");
         }
 
         /*Клик по кнопке запускает окно сетевых подключений для возможности саморучно переподключиться к интернету*/

@@ -92,21 +92,22 @@
             this.screenshotToolStripMenuItem,
             this.saveTextToolStripMenuItem});
             this.contextMenuStripScreenshotOrText.Name = "contextMenuStrip2";
-            this.contextMenuStripScreenshotOrText.Size = new System.Drawing.Size(148, 48);
+            this.contextMenuStripScreenshotOrText.Size = new System.Drawing.Size(181, 70);
             // 
             // screenshotToolStripMenuItem
             // 
             this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
-            this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.screenshotToolStripMenuItem.Text = "Screenshot";
             this.screenshotToolStripMenuItem.Click += new System.EventHandler(this.ScreenshotToolStripMenuItem_Click);
             // 
             // saveTextToolStripMenuItem
             // 
             this.saveTextToolStripMenuItem.Name = "saveTextToolStripMenuItem";
-            this.saveTextToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.saveTextToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveTextToolStripMenuItem.Text = "Save IPv4 info";
             this.saveTextToolStripMenuItem.Visible = false;
+            this.saveTextToolStripMenuItem.Click += new System.EventHandler(this.SaveTextToolStripMenuItem_Click);
             // 
             // panelForScreenshot
             // 
