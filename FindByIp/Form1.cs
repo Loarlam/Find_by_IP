@@ -348,7 +348,6 @@ namespace FindByIp
                 saveFileDialog.InitialDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                 screenshot.Save(saveFileDialog.FileName);
                 saveFileDialog.FileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
-                Process.Start(saveFileDialog.InitialDirectory);
             }
         }
 
@@ -396,8 +395,6 @@ namespace FindByIp
 
                 using (StreamWriter streamWriter = new StreamWriter(Path.GetFullPath(saveFileDialog.FileName)))
                     await streamWriter.WriteAsync(text);
-
-                Process.Start(saveFileDialog.InitialDirectory);
             }
 
             saveFileDialog.FileName = saveFileDialog.FileName.Substring(saveFileDialog.FileName.LastIndexOf(@"\") + 1).Replace(".txt", "");
@@ -412,7 +409,10 @@ namespace FindByIp
             Close();
 
         /*Перед закрытием формы удаляет ключ из реестра*/
-        void Form1_FormClosing(object sender, FormClosingEventArgs e) =>
+        void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
             Registry.CurrentUser.OpenSubKey(PATH_TO_REGISTRY_FOLDER, true).DeleteValue("FindByIp.exe");
+            Process.Start(saveFileDialog.InitialDirectory);
+        }
     }
 }
