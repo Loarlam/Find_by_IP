@@ -364,23 +364,23 @@ namespace FindByIp
         {
             if (((panelForInformation.Width == panelForScreenshot.Width)
                 && (textBoxWithInformationAboutIpAddress.Text != "")
-                && ((MousePosition.X > 8 + Location.X + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
-                && (MousePosition.X < 8 + Location.X + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2))
-                && ((MousePosition.Y > 22 + Location.Y + panelForScreenshot.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
-                && (MousePosition.Y < 21 + Location.Y + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2)))
+                && ((MousePosition.X > Location.X + 8 + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
+                    && (MousePosition.X < Location.X + 8 + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2))
+                && ((MousePosition.Y > Location.Y + 22 + panelForInformation.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
+                    && (MousePosition.Y < Location.Y + 21 + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2)))
                 ||
                 (panelForInformation.Width == panelForScreenshot.Width / 2)
                 && (textBoxWithInformationAboutIpAddress.Text != "")
-                && (MousePosition.X > 8 + Location.X + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
-                && (MousePosition.X < 8 + Location.X + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2)
-                && (MousePosition.Y > 22 + Location.Y + panelForInformation.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
-                && (MousePosition.Y < 21 + Location.Y + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2))
+                && (MousePosition.X > Location.X + 8 + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
+                    && (MousePosition.X < Location.X + 8 + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2)
+                && (MousePosition.Y > Location.Y + 22 + panelForInformation.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
+                    && (MousePosition.Y < Location.Y + 21 + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2))
             {
-                saveTextToolStripMenuItem.Visible = true;
+                panelForInformation.ContextMenuStrip = contextMenuStripText;
             }
 
             else
-                saveTextToolStripMenuItem.Visible = false;
+                panelForInformation.ContextMenuStrip = contextMenuStripScreenshot;
         }
 
         /*Клик по пункту "Save IPv4 info" в контекстном меню позволяет сохранять текстовую информацию об Ipv4-адресе*/
