@@ -108,6 +108,10 @@ namespace FindByIp
             buttonWithNetworkConnectons.Focus();
         }
 
+        /*Клик по кнопке запускает окно сетевых подключений для возможности саморучно переподключиться к интернету*/
+        void ButtonWithNetworkConnections_Click(object sender, EventArgs e) =>
+            Process.Start("control.exe", "netconnections");
+
         /*Отлавливает клавишу Enter; 
          * убирает linkLabel о проверке IPv4-адреса; 
          * копирует в переменную текст из textBox*/
@@ -312,7 +316,31 @@ namespace FindByIp
             Process.Start("https://ru.wikipedia.org/wiki/IPv4#%D0%9A%D0%BB%D0%B0%D1%81%D1%81%D0%BE%D0%B2%D0%B0%D1%8F_%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%B0%D1%86%D0%B8%D1%8F");
         }
 
-        /*Делает скриншот с формы; 
+        /*Отлавливается позицию мыши внутри panelForInformation для определения внутриконтурных координат отключенного textBoxWithInformationAboutIpAddress*/
+        void PanelForInformation_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (((panelForInformation.Width == panelForScreenshot.Width)
+                && (textBoxWithInformationAboutIpAddress.Text != "")
+                && ((MousePosition.X > Location.X + 8 + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
+                    && (MousePosition.X < Location.X + 8 + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2))
+                && ((MousePosition.Y > Location.Y + 22 + panelForInformation.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
+                    && (MousePosition.Y < Location.Y + 21 + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2)))
+                ||
+                (panelForInformation.Width == panelForScreenshot.Width / 2)
+                && (textBoxWithInformationAboutIpAddress.Text != "")
+                && (MousePosition.X > Location.X + 8 + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
+                    && (MousePosition.X < Location.X + 8 + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2)
+                && (MousePosition.Y > Location.Y + 22 + panelForInformation.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
+                    && (MousePosition.Y < Location.Y + 21 + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2))
+            {
+                panelForInformation.ContextMenuStrip = contextMenuStripText;
+            }
+
+            else
+                panelForInformation.ContextMenuStrip = contextMenuStripScreenshot;
+        }
+
+        /*Делает скриншот с формы при клике по пункту "Скриншот"; 
          * предлагает сохранить в форматах: jpg, png, bmp; 
          * проверяет файлы в папке для сохранения на наличие уже имеющихся с названием Screenshot №;
          * cохраняет скриншот с обрезкой тени по краям формы в выбранную папку;
@@ -352,38 +380,7 @@ namespace FindByIp
             }
         }
 
-        /*При двойном клике по значку приложения в трей, приложение разворачивается из свернутого положения */
-        void NotifyIconInTray_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (WindowState == FormWindowState.Minimized)
-                WindowState = FormWindowState.Normal;
-        }
-
-        /*Отлавливается позицию мыши внутри panelForInformation для определения внутриконтурных координат отключенного textBoxWithInformationAboutIpAddress*/
-        void PanelForInformation_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (((panelForInformation.Width == panelForScreenshot.Width)
-                && (textBoxWithInformationAboutIpAddress.Text != "")
-                && ((MousePosition.X > Location.X + 8 + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
-                    && (MousePosition.X < Location.X + 8 + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2))
-                && ((MousePosition.Y > Location.Y + 22 + panelForInformation.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
-                    && (MousePosition.Y < Location.Y + 21 + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2)))
-                ||
-                (panelForInformation.Width == panelForScreenshot.Width / 2)
-                && (textBoxWithInformationAboutIpAddress.Text != "")
-                && (MousePosition.X > Location.X + 8 + panelForInformation.Width / 2 - textBoxWithInformationAboutIpAddress.Width / 2)
-                    && (MousePosition.X < Location.X + 8 + panelForInformation.Width / 2 + textBoxWithInformationAboutIpAddress.Width / 2)
-                && (MousePosition.Y > Location.Y + 22 + panelForInformation.Height / 2 - textBoxWithInformationAboutIpAddress.Height / 2)
-                    && (MousePosition.Y < Location.Y + 21 + panelForInformation.Height / 2 + textBoxWithInformationAboutIpAddress.Height / 2))
-            {
-                panelForInformation.ContextMenuStrip = contextMenuStripText;
-            }
-
-            else
-                panelForInformation.ContextMenuStrip = contextMenuStripScreenshot;
-        }
-
-        /*Клик по пункту "Save IPv4 info" в контекстном меню позволяет сохранять текстовую информацию об Ipv4-адресе*/
+        /*Клик по пункту "Сохранить информацию об IPv4" в контекстном меню позволяет сохранять текстовую информацию об Ipv4-адресе*/
         async void SaveTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string text = string.Join("\r\n", textBoxWithInformationAboutIpAddress.Lines).Trim();
@@ -403,9 +400,12 @@ namespace FindByIp
             saveFileDialog.FileName = saveFileDialog.FileName.Substring(saveFileDialog.FileName.LastIndexOf(@"\") + 1).Replace(".txt", "");
         }
 
-        /*Клик по кнопке запускает окно сетевых подключений для возможности саморучно переподключиться к интернету*/
-        void ButtonWithNetworkConnections_Click(object sender, EventArgs e) =>
-            Process.Start("control.exe", "netconnections");
+        /*При двойном клике по значку приложения в трей, приложение разворачивается из свернутого положения */
+        void NotifyIconInTray_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+                WindowState = FormWindowState.Normal;
+        }
 
         /*Клик правой кнопкой мыши по значку приложения в трей предоставит меню с единственным параметром - Close*/
         void CloseToolStripMenuItem_Click(object sender, EventArgs e) =>
