@@ -15,7 +15,7 @@ namespace FindByIp
     {
         const string PATH_TO_REGISTRY_FOLDER = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION",
                      REGULAR_EXPRESSION = "\"ip\":\"(.*?)\",(.*?)\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"country_phone\":\"(.*?)\",(.*?)\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\",\"currency\":\"(.*?)\"";
-        bool IsWebBrowserVisible;
+        bool IsWebBrowserVisible, isTheScreenshotOrTextSaved;
         byte digitsInTheFileName;
         string[] filesInFolder;
         string previousIpv4, previousInformationAboutIpAddress, ipv4WithoutSpaces;
@@ -30,7 +30,7 @@ namespace FindByIp
 
             panelForInformation.Width = ClientSize.Width;
             webBrowserWithMap.Width -= webBrowserWithMap.Width;
-            IsWebBrowserVisible = false;
+            IsWebBrowserVisible = isTheScreenshotOrTextSaved = false;
             previousIpv4 = previousInformationAboutIpAddress = ipv4WithoutSpaces = "";
             webBrowserWithMap.ScriptErrorsSuppressed = true;
 
@@ -348,6 +348,7 @@ namespace FindByIp
                 saveFileDialog.InitialDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                 screenshot.Save(saveFileDialog.FileName);
                 saveFileDialog.FileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
+                isTheScreenshotOrTextSaved = true;
             }
         }
 
@@ -395,6 +396,8 @@ namespace FindByIp
 
                 using (StreamWriter streamWriter = new StreamWriter(Path.GetFullPath(saveFileDialog.FileName)))
                     await streamWriter.WriteAsync(text);
+
+                isTheScreenshotOrTextSaved = true;
             }
 
             saveFileDialog.FileName = saveFileDialog.FileName.Substring(saveFileDialog.FileName.LastIndexOf(@"\") + 1).Replace(".txt", "");
@@ -412,7 +415,9 @@ namespace FindByIp
         void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Registry.CurrentUser.OpenSubKey(PATH_TO_REGISTRY_FOLDER, true).DeleteValue("FindByIp.exe");
-            Process.Start(saveFileDialog.InitialDirectory);
+
+            if (isTheScreenshotOrTextSaved)
+                Process.Start(saveFileDialog.InitialDirectory);
         }
     }
 }
