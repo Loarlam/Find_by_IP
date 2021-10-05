@@ -14,7 +14,7 @@ namespace FindByIp
     public partial class Form1 : Form
     {
         const string PATH_TO_REGISTRY_FOLDER = @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION",
-                     REGULAR_EXPRESSION = "\"ip\":\"(.*?)\",(.*?)\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"country_phone\":\"(.*?)\",(.*?)\"city\":\"(.*?)\",\"latitude\":\"(.*?)\",\"longitude\":\"(.*?)\",(.*?)\"timezone_gmt\":\"(.*?)\",\"currency\":\"(.*?)\"";
+                     REGULAR_EXPRESSION = "\"ip\":\"(.*?)\",(.*?)\"continent\":\"(.*?)\",(.*?)\"country\":\"(.*?)\",(.*?)\"country_phone\":\"(.*?)\",(.*?)\"city\":\"(.*?)\",\"latitude\":(.*?),\"longitude\":(.*?),(.*?)\"timezone_gmt\":\"(.*?)\",\"currency\":\"(.*?)\"";
         bool IsWebBrowserVisible, isTheScreenshotOrTextSaved;
         byte digitsInTheFileName;
         string[] filesInFolder;
@@ -165,7 +165,7 @@ namespace FindByIp
 
                         using (WebClient wc = new WebClient())
                         {
-                            Match match = Regex.Match(wc.DownloadString($"http://free.ipwhois.io/json/{ipv4WithoutSpaces}"), REGULAR_EXPRESSION);
+                            Match match = Regex.Match(wc.DownloadString($"http://ipwhois.app/json/{ipv4WithoutSpaces}"), REGULAR_EXPRESSION);
 
                             textBoxWithInformationAboutIpAddress.Text = $"\r\n\r\n\r\n\r\nIP-адрес: {match.Groups[1].Value}\r\nКонтинент: {match.Groups[3].Value}\r\nСтрана: {match.Groups[5].Value}\r\n" +
                                $"Телефонный код страны: {match.Groups[7].Value}\r\nГород: {match.Groups[9].Value}\r\nШирота: {match.Groups[10].Value}" +
